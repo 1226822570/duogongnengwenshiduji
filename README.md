@@ -26,3 +26,13 @@
 7. 0.96寸OLED
 
 ## 实物展示
+### 工作状态
+![image](https://github.com/1226822570/duogongnengwenshiduji/blob/main/img/1.jpg)
+### 充电状态
+![image](https://github.com/1226822570/duogongnengwenshiduji/blob/main/img/2.jpg)
+### 手机界面
+![image](https://github.com/1226822570/duogongnengwenshiduji/blob/main/img/3.jpg)
+
+## 其他问题
+
+由于在测试时，购买的红外发射管效果不太好，所以就从不用的遥控器上拆了一个红外发射管来用，效果还可以！！！
