@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<package schemaVersion="1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="PACK.xsd">
+  <vendor>Keil</vendor>
+  <name>STM32WLxx_DFP</name>
+  <description>STMicroelectronics STM32WL Series Device Support</description>
+  <url>http://www.keil.com/pack/</url>
+
+  <releases>
+    <release version="1.0.0" date="2020-01-23" >
+      Initial Release of basic device support for STM32WL device series.
+      - STM32WLE5JCIx,STM32WLE5JBIx,STM32WLE5J8Ix
+	  (does not include STM32Cube FW Library deliverables i.e. HAL, contact ST for STM32Cube WL FW Library)
+    </release>
+  </releases>
+
+  <!-- keywords for indexing -->
+  <keywords>
+    <keyword>ST</keyword>
+    <keyword>Device Support</keyword>
+    <keyword>Device Family Package STMicroelectronics</keyword>
+    <keyword>STM32WL_DFP</keyword>
+    <keyword>STM32WLxx</keyword>
+  </keywords>
+
+  <devices>
+    <family Dfamily="STM32WL Series" Dvendor="STMicroelectronics:13">
+
+      <!--book name="Documentation/?.pdf" title="STM32G4xx HAL Drivers"/-->
+      <book name="Documentation/dui0553a_cortex_m4_dgug.pdf" title="Cortex-M4 Generic User Guide"/>
+
+      <description>
+        The STM32WLExx microcontroller is based on ARMCortex-M4 core. It integrates  a sub-GHZ radio operating in the
+        150 - 960 MHz ISM band, belong to a family of microcontrollers with different memory sizes,packages and peripherals.
+        The main features:
+        - Multiprotocol LPWAN 32-bit Arm Cortex-M4 MCUs LoRa,
+        -(G)FSK, (G)MSK, BPSK,
+        - up to 256KB Flash,
+        - 64 KB SRAM
+      </description>
+
+      <!-- ************************  Subfamily 'STM32WLE5 Single Core'  **************************** -->
+      <subFamily DsubFamily="STM32WLE5">
+        <processor  Dcore="Cortex-M4"  DcoreVersion="r0p1" Dfpu="NO_FPU" Dmpu="MPU" Dendian="Little-endian" Dclock="10000000"/>
+        <description >
+          STM32WLE5xx devices are designed to be extremely low-power and are based on the high-performance Arm® Cortex®-M4 32-bit
+          RISC core operating at a frequency of up to 48 MHz. This core implements a full set of DSP instructions and an independent
+          memory protection unit (MPU) that enhances the application security.
+        </description>
+
+        <debug svd="CMSIS/SVD/STM32WLE5_CM4.svd"/>
+        <compile header="Drivers/Device/ST/STM32WLxx/Include/stm32wlxx.h" define="STM32WLE5xx"/>
+        <book name="Documentation/dui0553a_cortex_m4_dgug.pdf" title="Cortex-M4 Generic User Guide"/>
+        <book name="Documentation/RM0461.pdf" title="STM32WLEx Reference Manual"/>
+        <book name="Documentation/DS13105.pdf" title="STM32WLE5J8 STM32WLE5JB STM32WLE5JC Data Sheet"/>
+
+        <!-- ################################### 256 KB ################################## -->
+        <!-- *************************  Device 'STM32WLE5JCIx  ***************************** -->
+        <device Dname="STM32WLE5JCIx">
+          <memory    name="IRAM"  access="rw" id="IRAM1" start="0x20000000"  size="0x10000"   init="0"    default="1" />
+          <memory    name="FLASH" access="rx" id="IROM1" start="0x08000000"  size="0x40000"   startup="1" default="1" />
+          <algorithm name="CMSIS/Flash/STM32WLxx_CM4.FLM" start="0x08000000" size="0x40000"   default="1" />
+          <feature type="BGA" n="73"/>
+        </device>
+
+        <!-- ################################### 128 KB ################################## -->
+
+        <!-- *************************  Device 'STM32WLE5JBIx'  ***************************** -->
+        <device Dname="STM32WLE5JBIx">
+          <memory name="IRAM"  access="rw" id="IRAM1"   start="0x20000000"  size="0xC000"  init="0"       default="1" />
+          <memory name="FLASH" access="rx" id="IROM1"   start="0x08000000"  size="0x20000" startup="1"    default="1" />
+          <algorithm name="CMSIS/Flash/STM32WLExx_128.FLM" start="0x08000000" size="0x20000"    default="1" />
+          <feature type="BGA" n="73"/>
+        </device>
+
+        <!-- ################################### 64 KB ################################## -->
+
+        <!-- *************************  Device 'STM32WLE5J8Ix'  ***************************** -->
+        <device Dname="STM32WLE5J8Ix">
+          <memory name="IRAM"  access="rw" id="IRAM1" start="0x20000000" size="0x5000"  init="0"      default="1" />
+          <memory name="FLASH" access="rx" id="IROM1"   start="0x08000000" size="0x10000" startup="1"   default="1" />
+          <algorithm name="CMSIS/Flash/STM32WLExx_64.FLM" start="0x08000000" size="0x10000" default="1" />
+          <feature type="BGA" n="73"/>
+        </device>
+      </subFamily>
+
+    </family>
+  </devices>
+
+  <conditions>
+    <!-- Compiler Conditions -->
+    <condition id="Compiler ARMCC">
+      <require Tcompiler="ARMCC"/>
+    </condition>
+    <condition id="Compiler IAR">
+      <require Tcompiler="IAR"/>
+    </condition>
+
+    <!-- Device Conditions -->
+    <condition id="STM32WLE5">
+      <description>STMicroelectronics STM32WLE5 Devices</description>
+      <require Dvendor="STMicroelectronics:13" Dname="STM32WLE5*"/>
+    </condition>
+
+    <!-- Device + CMSIS Conditions -->
+    <condition id="STM32WLE5 CMSIS">
+      <description>STMicroelectronics STM32WLE5 Device and CMSIS-CORE</description>
+      <require condition="STM32WLE5"/>
+      <require Cclass="CMSIS" Cgroup="CORE"/>
+    </condition>
+
+    <!-- Device + Compiler Conditions (ARMCC) -->
+    <condition id="STM32WLE5 ARMCC">
+      <description>STMicroelectronics STM32WLE5 Devices and ARMCC Compiler</description>
+      <require condition="STM32WLE5"/>
+      <require condition="Compiler ARMCC"/>
+    </condition>
+
+    <!-- Device + Compiler Conditions (IAR) -->
+    <condition id="STM32WLE5 IAR">
+      <description>STMicroelectronics STM32WLE5 Devices and IAR Compiler</description>
+      <require condition="STM32WLE5"/>
+      <require condition="Compiler IAR"/>
+    </condition>
+  </conditions>
+
+  <components>
+    <component Cclass="Device" Cgroup="Startup" Cversion="1.0.0" condition="STM32WLE5 CMSIS">
+      <description>System Startup for STMicroelectronics STM32WLE5 Series</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STARTUP_STM32WLE5XX    /* Device Startup for STM32WLE5 */
+      </RTE_Components_h>
+
+      <files>
+        <!--  include folder -->
+        <file category="include" name="Drivers/Device/ST/STM32WLxx/Include/"/>
+
+        <!-- Flash Option Bytes templates -->
+
+        <!-- common device header file -->
+        <file category="header" name="Drivers/Device/ST/STM32WLxx/Include/stm32wle5xx.h"/>
+
+        <!-- startup files -->
+        <!-- ARM Compiler Toolchain -->
+        <file category="source"       condition="STM32WLE5 ARMCC" name="Drivers/Device/ST/STM32WLxx/Source/Templates/arm/startup_stm32wle5xx.s"         attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32WLE5 ARMCC" name="Drivers/Device/ST/STM32WLxx/Source/Templates/arm/linker/stm32wle5xx_flash.sct"  attr="config" version="1.0.0"/>
+
+        <!-- IAR Toolchain -->
+        <file category="source"       condition="STM32WLE5 IAR"   name="Drivers/Device/ST/STM32WLxx/Source/Templates/iar/startup_stm32wle5xx.s"         attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32WLE5 IAR"   name="Drivers/Device/ST/STM32WLxx/Source/Templates/iar/linker/stm32wle5xx_sram.icf"   attr="config" version="1.0.0"/>
+
+        <!-- system file -->
+        <file category="source"                                   name="Drivers/Device/ST/STM32WLxx/Source/Templates/system_stm32wlxx.c"                attr="config" version="1.0.0"/>
+      </files>
+    </component>
+  </components>
+</package>

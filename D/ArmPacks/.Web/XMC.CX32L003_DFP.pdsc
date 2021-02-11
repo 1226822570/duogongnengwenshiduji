@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<package schemaVersion="1.4" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="PACK.xsd">
+  <vendor>XMC</vendor>
+  <name>CX32L003_DFP</name>
+  <description>XMC CM32L0 Series Device Family Pack</description>
+  <url>http://ziweixing.workspacep5.webfoss.com/uploads/</url> 
+  <supportContact>Hao_Zhu@xmcwh.com</supportContact>
+  <!-- optional license file -->
+  <!-- 
+  <license>
+  </license>
+  -->
+  
+  <releases>	
+    <release version="1.0.7" date="2019-11-14">
+        update XMC company name
+    </release>
+  </releases>  
+  
+  <keywords>
+    <!-- keywords for indexing -->
+    <keyword>XMC</keyword>
+    <keyword>Device Support</keyword>
+    <keyword>Device Family Package XMC</keyword>
+    <keyword>CX32L0</keyword>
+    <keyword>CX32</keyword>
+  </keywords>
+
+  <!-- devices section (mandatory for Device Family Packs) -->
+  <devices>
+    <family Dfamily="CX32L0 Series" Dvendor="XMC:158">
+    <processor Dcore="Cortex-M0+" DcoreVersion="r0p1" Dfpu="0" Dmpu="0" Dendian="Little-endian"/>
+    <description>
+        The CX32L0 device family contains an ARM Cortex-M0+ processor, running up to 24 MHz with a versatile set of on-chip peripherals.
+    </description>
+    <compile    header="Device/Include/cx32l003.h"/>
+    <debug      svd="SVD/cx32l003.svd"/>    
+    <subFamily DsubFamily="CX32L003">
+      <processor  Dclock="24000000"/>   
+      <device Dname="CX32L003F8">
+        <memory     name="IROM1"  access="rx"       start="0x00000000"  size="0x10000"     startup="1"   default="1"/>
+        <memory     name="IRAM1"  access="rw"       start="0x20000000"  size="0x01000"     init   ="0"   default="1"/>
+        <algorithm  name="Flash/CX32L003F8.FLM"    start="0x00000000"  size="0x10000"                   default="1"/>	        
+      </device>
+      <device Dname="CX32L003F6">
+        <memory     name="IROM1"  access="rx"        start="0x00000000"  size="0x8000"     startup="1"   default="1"/>
+        <memory     name="IRAM1"  access="rx"        start="0x20000000"  size="0x1000"     init   ="0"   default="1"/>
+        <algorithm  name="Flash/CX32L003F6.FLM"     start="0x00000000"  size="0x8000"                   default="1"/>	      
+      </device>
+    </subFamily>
+    </family>  
+  </devices>
+
+
+  <!-- examples section (optional for all Software Packs)-->
+  <!--
+  <examples>
+  </examples>
+  -->
+  
+  <!-- conditions section (optional for all Software Packs)-->
+  <conditions>
+ 
+    <!-- Compiler Conditions -->	
+    <condition id="Compiler ARMCC">
+        <description>Startup assembler file for ARMCC</description>
+        <require Tcompiler="ARMCC"/>
+    </condition>	
+    <condition id="Compiler GCC">
+        <description>Startup assembler file for GCC</description>
+        <require Tcompiler="GCC"/>
+    </condition>
+    <condition id="Compiler IAR">
+        <description>Startup assembler file for IAR</description>
+        <require Tcompiler="IAR"/>
+    </condition>  
+
+     <!-- Device Conditions -->
+    <condition id="CX32L0">
+      <description>XMC CX32L0 Devices</description>
+      <require Dvendor="XMC:158" Dname="CX32L0*"/>
+    </condition>
+  
+     <condition id="CX32L003F8">
+      <description>XMC CX32L003 Devices</description>
+      <require Dvendor="XMC:158" Dname="CX32L003*"/>
+    </condition> 
+  
+     <condition id="CX32L003F6">
+      <description>XMC CX32L003 Devices</description>
+      <require Dvendor="XMC:158" Dname="CX32L003*"/>
+    </condition>   
+  
+     <!-- Device + CMSIS Conditions -->	
+    <condition id="CX32L0 CMSIS">
+      <description>XMC CX32L0 Series devices and CMSIS-CORE</description>
+      <require condition="CX32L0"/>
+      <require Cclass="CMSIS" Cgroup="CORE"/>	
+    </condition>
+	
+	
+     <!-- Device + Compiler Conditions (ARMCC) -->
+    <condition id="ARMCC" >
+      <description>XMC CX32L003F8 Devices and ARMCC Compiler</description>
+      <require condition="Compiler ARMCC"/>
+    </condition>
+	
+    <!-- Device + Compiler Conditions (GCC) -->
+    <condition id="GCC" >
+      <description>XMC CX32L003F8 Devices and GCC Compiler</description>
+      <require condition="Compiler GCC"/>
+    </condition>
+
+    <!-- Device + Compiler Conditions (IAR) -->
+    <condition id="IAR" >
+      <description>XMC CX32L003F8 Devices and IAR Compiler</description>
+      <require condition="Compiler IAR"/>
+    </condition>
+	
+  </conditions>  
+  
+ 
+  <!-- component section (optional for all Software Packs)-->	
+  <components> 
+    
+    <component Cclass="Device" Cgroup="Startup" Cversion="1.0.0" condition="CX32L0 CMSIS">
+        <description>System Startup for XMC CX32L0 Series</description>
+        <files>	
+        <!--  include folder -->
+        <file category="include" name="Device/Include/"/>
+		
+		<!-- common device header file -->
+        <file category="header" name="Device/Include/cx32l003.h"/>
+
+        <!-- startup files -->
+        <!-- ARM Compiler Toolchain -->
+        <file category="source" condition="ARMCC" name="Device/Source/ARM/startup_cx32l003.s" attr="config" version="1.0.0"/>			
+
+        <!-- GCC Toolchain -->
+        <file category="source" condition="GCC"   name="Device/Source/GCC/startup_cx32l003.S" attr="config" version="1.0.0"/>
+
+        <!-- IAR Toolchain -->
+        <file category="source" condition="IAR"   name="Device/Source/IAR/startup_cx32l003.s" attr="config" version="1.0.0"/>	
+
+		<file category="source"  name="Device/Source/system_cx32l003.c"  attr="config" version="1.0.0"/>
+        </files>
+    </component> 
+ 	
+  </components> 	
+	
+</package>

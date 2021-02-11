@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package schemaVersion="1.4" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="PACK.xsd">
+  <vendor>EtaCompute</vendor>
+  <name>ECM35xx_DFP</name>
+  <description>ECM 35xx Drivers and Documentation</description>
+  <url>http://etacompute.com/pack/keil/released/</url>
+  <supportContact>https://etacompute.com/contact-us/</supportContact>
+  <license>LICENSE.txt</license>
+  <releases>
+    <release version="1.0.37" date="2020-03-11">
+    ECM35xx: 1.0.37 (see revision history for details)
+    - Updated URL Pointer to Eta Compute Product Brief.
+    </release>
+    <!--
+    <release version="1.0.36" date="2020-03-10">
+    ECM35xx: 1.0.36 (see revision history for details)
+    - Updated URL Pointer to Eta Compute Product Brief.
+    </release>
+    <release version="1.0.35" date="2020-3-10">
+    ECM35xx: 1.0.35 (see revision history for details)
+    - Released New ECM3532.FLM file supporting Flash Programming for ECM3532"
+    </release>
+    <release version="1.0.34" date="2019-10-05">
+    ECM35xx: 1.0.34 (see revision history for details)
+    - Released New ECM3532.FLM file supporting Flash Programming for ECM3532"
+    </release>
+    <release version="1.0.33" date="2019-09-23">
+    ECM35xx: 1.0.33 (see revision history for details)
+    - Release Candidate #11 for ECM3531 support cleaned up in the PDSC
+    - Fixed schema check bugs in memory sizes.
+    </release>
+    <release version="1.0.32" date="2019-09-22">
+    ECM35xx: 1.0.32 (see revision history for details)
+    - Release Candidate #10 for ECM3531 support cleaned up in the PDSC
+    - add FLM project items.
+    - updated date formats and commented out release notes on past releases.
+    - scrubbed errors out of SVD files.
+    </release>
+    <release version="1.0.31" date="2019-09-19">
+    ECM35xx: 1.0.31 (see revision history for details)
+    - Release Candidate #9 for ECM3531 support with part descriptions.
+    </release>
+    <release version="1.1.01" date="2019-07-19">
+    ECM35xx: 1.1.1 (see revision history for details)
+    - Release Candidate #2 for ECM3532 support
+    - Missing FLM file from pack
+    - Also startup file not conforming to ecm3532 ISR table
+    </release>
+    <release version="1.1.00" date="2019-07-18">
+    ECM35xx: 1.1.0 (see revision history for details)
+    - Release Candidate #1 for ECM3532 support
+    - Updates to all plus creation of ECM3532.FLM file.
+    </release>
+    <release version="1.0.30" date="2019-03-14">
+    ECM35xx: 1.0.30 (see revision history for details)
+    - Release Candidate #8 for ECM3531 support
+    - Startup file updates for better HEAP support. 
+    </release>
+    <release version="1.0.29" date="2018-12-13">
+    ECM35xx: 1.0.29 (see revision history for details)
+    - Release Candidate #7 for ECM3531 support
+    - Startup file updates.
+    </release>
+    <release version="1.0.28" date="2018-11-30">
+    ECM35xx: 1.0.28 (see revision history for details)
+    - Release Candidate #6 for ECM3531 support
+    - Reduce default stack size from 32kB to 4kB.
+    </release>
+    <release version="1.0.27" date="2018-11-08">
+      ECM35xx: 1.0.27 (see revision history for details)
+      - Release Candidate #5 for ECM3531 support
+      - Removed Boards from Keil Pack Distribution
+    </release>
+    <release version="1.0.26" date="2018-11-05">
+      ECM35xx: 1.0.26 (see revision history for details)
+      - Release Candidate #4 for ECM3531 support
+      - Added EVBs for ecm3531 and ecm3501
+    </release>
+    <release version="1.0.25" date="2018-10-21">
+      ECM35xx: 1.0.25 (see revision history for details)
+      - Release Candidate #3 for ECM3531 support
+      - Added EVBs for ecm3531 and ecm3501
+    </release>
+    <release version="1.0.24" date="2018-09-02">
+      ECM35xx: 1.0.24 (see revision history for details)
+      - Release Candidate #3 for ECM3531 support
+      - Added additional examples dial_stall, fm_demo, sleep_tight
+    </release>
+    <release version="1.0.23" date="2018-09-02">
+      ECM35xx: 1.0.23 (see revision history for details)
+      - Release Candidate #2 for ECM3531 support
+      - Added additional examples dial_stall, fm_demo, sleep_tight
+    </release>
+    <release version="1.0.22" date="2018-08-31">
+      ECM35xx: 1.0.22 (see revision history for details)
+      - Release Candidate #1 for ECM3531 support
+      - Added additional examples dial_stall, fm_demo, sleep_tight
+    </release>
+    <release version="1.0.21" date="2018-08-31">
+      ECM35xx: 1.0.21 (see revision history for details)
+      - Release Candidate for ECM3531 support
+      - Updated Keil projects for ECM3531 for SRAM and FLASH
+    </release>
+    <release version="1.0.20" date="2018-08-31">
+      ECM35xx: 1.0.20 (see revision history for details)
+      - Fix Debug_FLASH.ini for hello_world and reset_accum
+    </release>
+    <release version="1.0.19" date="2018-08-31">
+      ECM35xx: 1.0.19 (see revision history for details)
+      - Fix startup files
+    </release>
+    <release version="1.0.18" date="2018-08-21">
+      ECM35xx: 1.0.18 (see revision history for details)
+      - Fix ECM35xx SVD Fields. Update descriptions.
+      - Fix processor definition in pdsc.
+    </release>
+    <release version="1.0.17" date="2018-08-06">
+      ECM35xx: 1.0.17 (see revision history for details)
+      - Update csp, flash timing, and sync examples.
+      - CMSIS 5.4.0
+    </release>
+    <release version="1.0.16" date="2018-07-02">
+      ECM35xx: 1.0.16 (see revision history for details)
+      - new ECM3531.FLM flash driver.
+      - Updated SVD, and PDSC startup files.
+      - Add ECM3531VAL examples.
+    </release>
+    <release version="1.0.15" date="2018-05-25">
+      ECM35xx: 1.0.15 (see revision history for details)
+      - Fixed a pesky bug in the FLM file (flash loader module) for ecm3501 for sector erase
+      - new ECM3501.FLM file
+      - Added ECM3531 Device support
+    </release>
+    <release version="1.0.14" date="2018-05-11">
+      ECM35xx: 1.0.14 (see revision history for details)
+      - Fixed 2 pesky bugs in the FLM file (flash loader module) for ecm3501
+      - new ECM3501.FLM file
+    </release>
+    <release version="1.0.13" date="2018-04-30">
+      ECM35xx: 1.0.13 (see revision history for details)
+      - Added a number of examples for ECM3501 and cleaned for customer delivery
+      - Lucky 13!!
+    </release>
+    <release version="1.0.12" date="2018-03-12">
+      ECM35xx: 1.0.12 (see revision history for details)
+      - Changed Keil startup code to pass thru to SRAM if SRAM valid
+      - SRAM should have been higher priority for booting in bootrom.
+    </release>
+    <release version="1.0.11" date="2018-01-30">
+      ECM35xx: 1.0.11 (see revision history for details)
+      - Changed Keil startup code to pass thru to SRAM if SRAM valid
+      - SRAM should have been higher priority for booting in bootrom.
+    </release>
+    <release version="1.0.10" date="2018-01-30">
+      ECM35xx: 1.0.10 (see revision history for details)
+      - Changed Keil startup code to pass thru to SRAM if SRAM valid
+      - SRAM should have been higher priority for booting in bootrom.
+    </release>
+    <release version="1.0.9" date="2018-01-29">
+      ECM35xx: 1.0.9 (see revision history for details)
+      - Updated FLM file to handle non-word aligned buffer inputs.
+      - ECM35XX helper functions require double word aligned buffers.
+    </release>
+    <release version="1.0.8" date="2018-01-29">
+      ECM35xx: 1.0.8 (see revision history for details)
+      - Updated FLM file to handle non-word aligned buffer inputs.
+      - ECM35XX helper functions require double word aligned buffers.
+    </release>
+    <release version="1.0.7" date="2018-01-29">
+      ECM35xx: 1.0.7 (see revision history for details)
+      - Updated FLM file to handle non-word aligned buffer inputs.
+      - ECM35XX helper functions require double word aligned buffers.
+    </release>
+    <release version="1.0.6" date="2018-01-28">
+      ECM35xx: 1.0.6 (see revision history for details)
+      - Updated FLM file to handle non-word aligned buffer inputs.
+      - ECM35XX helper functions require word aligned buffers.
+    </release>
+    <release version="1.0.5" date="2018-01-28">
+      ECM35xx: 1.0.5 (see revision history for details)
+      - Add Flash project to hello_world and hello_abov.
+      - Use ResetISR in startup files.
+      - Fix FLM sector0 and Flash Testing.
+    </release>
+    <release version="1.0.4" date="2018-01-27">
+      ECM35xx: 1.0.4 (see revision history for details)
+      - Fix Flash project build templates.
+      - Use ResetISR in startup files.
+    </release>
+    <release version="1.0.3" date="2018-01-26">
+      ECM35xx: 1.0.3 (see revision history for details)
+      - Final flash driver.
+    </release>
+    <release version="1.0.2" date="2018-01-24">
+      ECM35xx: 1.0.2 (see revision history for details)
+      - Update CSP, Examples, Startup code.
+    </release>
+    <release version="1.0.1" date="2018-01-09">
+      ECM35xx: 1.0.1 (see revision history for details)
+      - Update Flash programming parameters.
+    </release>
+    <release version="1.0.0" date="2018-01-01">
+      ECM35xx: 1.0.0 (see revision history for details)
+      - Added Flash Driver for Board and FPGA.
+    </release>
+	 /-->
+  </releases>
+  <!-- taxonomy>
+       <description Cclass="Board Support">Evaluation and Development Board Specific Interfaces</description>
+       <description Cclass="CMSIS" doc="CMSIS/Documentation/General/html/index.html">Cortex Microcontroller Software Interface Components</description>
+       <description Cclass="Device" doc="CMSIS/Documentation/Core/html/index.html">Startup, System Setup</description>
+       <description Cclass="Flash Driver" doc="CMSIS/Documentation/Driver/html/index.html">Unified Device Drivers compliant to CMSIS-Driver Specifications</description>
+       <description Cclass="USB">Universal Serial Bus Stack</description>
+       </taxonomy -->
+  <!-- keywords for indexing -->
+  <keywords>
+    <keyword>ECM35xx</keyword>
+    <keyword>ECM3501</keyword>
+    <keyword>ECM3531</keyword>
+    <keyword>ECM3532</keyword>
+    <keyword>EtaCompute</keyword>
+  </keywords>
+  <!-- ****************************** Family 'ECM35xx' ****************************** -->
+  <devices>
+    <family Dfamily="ECM35xx" Dvendor="EtaCompute:157">
+      <!-- book name="https://etacompute.com/help/topic/com.arm.doc.dui0552a/DUI0552A_cortex_m3_dgug.pdf" title="ECM35xx Device Generic Users Guide"/-->
+      <description>The ECM35xx family of Self-Timed Microcontrollers and DSP's.</description>
+      <!-- *************************  Device 'ECM3501'  ***************************** -->
+      <device Dname="ECM3501">
+        <processor Dcore="Cortex-M3" DcoreVersion="r2p0" Dfpu="0" Dmpu="1" Dendian="Little-endian" Dclock="85000000" />
+        <!-- book name="Documentation/ECM3501.pdf" title="ETA COMPUTE ECM3501 Data Sheet"/ -->
+        <compile header="Device/ECM3501/Include/ecm35xx_device.h" />
+        <debug svd="CMSIS/SVD/ECM3501.svd" />
+        <memory id="IROM1" start="0x01000000" size="0x00080000" startup="1" default="1" />
+        <memory id="IRAM1" start="0x10000000" size="0x00020000" init   ="0" default="1" />
+        <algorithm name="CMSIS/Flash/ECM3501.FLM" start="0x01000000" size="0x00080000" default="1" />
+      </device>
+      <!-- *************************  Device 'ECM3531'  ***************************** -->
+      <device Dname="ECM3531">
+        <processor Dcore="Cortex-M3" DcoreVersion="r2p0" Dfpu="0" Dmpu="1" Dendian="Little-endian" Dclock="100000000" />
+	<description>
+		The ECM3531 is an SoC realized with an Arm Cortex-M3 processor, a NXP CoolFlux DSP, 512KB of Flash, 192KB of SRAM and supporting peripherals. The ECM3531 is implemented using Eta Compute’s proprietary DIAL® (Delay Insensitive Asynchronous Logic) technology, dynamic voltage and frequency scaling and near threshold voltage operation and is intended to support ultra-low power edge AI, energy harvesting and IoT applications.
+	</description>
+	<feature type="Temp"   n="0" m="85" />
+	<feature type="VCC" n="1.8" m="3.3" />
+	<feature type="NVIC"   n="24" name="NVIC" />
+	<feature type="Memory"   n="128" name="M3 SRAM" />
+	<feature type="MemoryOther" n="64"  name="DSP SRAM" />
+	<feature type="MemoryOther" n="512"  name="FLASH" />
+	<feature type="ClockOther" n="8000000" name="HFO" />
+	<feature type="RTC"    n="327678" />
+	<feature type="WDT"    n="1" />
+	<feature type="IOs"   n="32" />
+	<feature type="UART"   n="2" />
+	<feature type="I2C"   n="3" />
+	<feature type="SPI"   n="3" />
+	<feature type="Timer"   n="4" m="64" name="RTOS Timer" />
+	<feature type="TimerOther"   n="4" m="16" name="Always On Timer TMR" />
+	<feature type="PWM"    n="4" m="32" />
+	<feature type="I2S"   n="1" />
+	<feature type="CoreOther"   name="DSP CoolFlux TM" />
+	<feature type="ADC"  n="4"  name="ADC" />
+	<feature type="TempSens"  n="1"  name="TSens" />
+	<feature type="QFN"    n="88"   name="88QFN" />
+        <!-- book name="Documentation/ECM3531.pdf" title="ETA COMPUTE ECM3531 Data Sheet"/ -->
+        <compile header="Device/ECM3531/Include/ecm353x_device.h" />
+        <debug svd="CMSIS/SVD/ECM3531.svd" />
+        <memory id="IROM1" start="0x01000000" size="0x00080000" startup="1" default="1" />
+        <memory id="IRAM1" start="0x10000000" size="0x00020000" init   ="0" default="1" />
+        <algorithm name="CMSIS/Flash/ECM3531.FLM" start="0x01000000" size="0x00080000" default="1" />
+      </device>
+      <!-- *************************  Device 'ECM3532'  ***************************** -->
+      <device Dname="ECM3532">
+        <processor Dcore="Cortex-M3" DcoreVersion="r2p0" Dfpu="0" Dmpu="1" Dendian="Little-endian" Dclock="100000000" />
+        <!-- book name="Documentation/ECM3532.pdf" title="ETA COMPUTE ECM3532 Data Sheet"/ -->
+        <compile header="Device/ECM3532/Include/ecm353x_device.h" />
+        <debug svd="CMSIS/SVD/ECM3532.svd" />
+        <memory id="IROM1" start="0x01000000" size="0x00080000" startup="1" default="1" />
+        <memory id="IRAM1" start="0x10000000" size="0x00040000" init   ="0" default="1" />
+        <algorithm name="CMSIS/Flash/ECM3532.FLM" start="0x01000000" size="0x00080000" default="1" />
+      </device>
+    </family>
+  </devices>
+  <!-- conditions are dependency rules that can apply to a component or an individual file -->
+  <conditions>
+    <!-- Compiler Conditions -->
+    <condition id="Compiler ARMCC">
+      <require Tcompiler="ARMCC" />
+    </condition>
+    <!-- Device + CMSIS Conditions -->
+    <condition id="ECM3501 CMSIS">
+      <description>Eta Compute ECM3501 Devices and CMSIS-Core</description>
+      <require condition="Compiler ARMCC" />
+      <!-- require condition="ECM3501 Devices" / -->
+      <!-- require Cclass="CMSIS" Cgroup="CORE" / -->
+      <accept Dname="ECM3501" />
+    </condition>
+    <condition id="ECM3531 CMSIS">
+      <description>Eta Compute ECM3531 Devices and CMSIS-Core</description>
+      <require condition="Compiler ARMCC" />
+      <!-- <require Cclass="CMSIS" Cgroup="CORE" / -->
+      <accept Dname="ECM3531" />
+    </condition>
+    <condition id="ECM3532 CMSIS">
+      <description>Eta Compute ECM3532 Devices and CMSIS-Core</description>
+      <require condition="Compiler ARMCC" />
+      <!-- require Cclass="CMSIS" Cgroup="CORE" / -->
+      <accept Dname="ECM3532" />
+    </condition>
+  </conditions>
+  <components>
+    <!-- Startup -->
+    <component Cclass="Device" Cgroup="Startup" Cversion="1.0.2" condition="ECM3501 CMSIS">
+      <description>System Startup for Eta Compute ECM3501 Devices</description>
+      <files>
+        <file category="include" name="Device/ECM3501/Include/" />
+	<!-- 
+        <file category="sourceAsm" name="Device/ECM3501/Source/ARM/startup_ecm35xx.s" attr="config" condition="Compiler ARMCC" version="1.0.5" />
+	     -->
+        <file category="sourceAsm" name="Device/ECM3501/Source/ARM/startup_ecm35xx.s" attr="config"  version="1.0.5" />
+        <file category="header" name="Device/ECM3501/Include/ecm35xx_device.h" attr="config" version="1.0.0" />
+        <file category="sourceC" name="Device/ECM3501/Source/system_ecm35xx.c" attr="config" version="1.0.5" />
+        <file category="header" name="Device/ECM3501/RTE/RTE_Device.h" attr="config" version="1.0.0" />
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="Startup" Cversion="1.0.2" condition="ECM3531 CMSIS">
+      <description>System Startup for Eta Compute ECM3531 Devices</description>
+      <files>
+        <file category="include" name="Device/ECM3531/Include/" />
+        <file category="sourceAsm" name="Device/ECM3531/Source/ARM/startup_keil.s" attr="config" condition="Compiler ARMCC" version="1.0.2" />
+        <file category="sourceC" name="Device/ECM3531/Source/system_ecm353x.c" attr="config" version="1.0.2" />
+        <file category="header" name="Device/ECM3531/Include/ecm353x_device.h" attr="config" version="1.0.0" />
+        <file category="header" name="Device/ECM3531/Include/system_ecm353x.h" attr="config" version="1.0.0" />
+        <file category="header" name="Device/ECM3531/RTE/RTE_Device.h" attr="config" version="2.0.0" />
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="Startup" Cversion="1.0.2" condition="ECM3532 CMSIS">
+      <description>System Startup for Eta Compute ECM3532 Devices</description>
+      <files>
+        <file category="include" name="Device/ECM3532/Include/" />
+        <file category="sourceAsm" name="Device/ECM3532/Source/ARM/startup_keil.s" attr="config" condition="Compiler ARMCC" version="1.0.2" />
+        <file category="sourceC" name="Device/ECM3532/Source/system_ecm353x.c" attr="config" version="1.0.2" />
+        <file category="header" name="Device/ECM3532/Include/ecm353x_device.h" attr="config" version="1.0.0" />
+        <file category="header" name="Device/ECM3532/Include/system_ecm353x.h" attr="config" version="1.0.0" />
+        <file category="header" name="Device/ECM3532/RTE/RTE_Device.h" attr="config" version="2.0.0" />
+      </files>
+    </component>
+  </components>
+</package>
+

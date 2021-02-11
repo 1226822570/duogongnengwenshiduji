@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package schemaVersion="1.2" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="PACK.xsd">
+  <vendor>SiliconLabs</vendor>
+  <url>https://www.silabs.com/documents/public/cmsis-packs/</url>
+  <name>GeckoPlatform_EFR32BG22_DFP</name>
+  <description>Silicon Labs EFR32BG22 Blue Gecko Series Device Support.</description>
+
+  <releases>
+    <release version="2.7.3" date="2020-03-23">
+      The PRORTC timer peripheral has been added to EFR32xG13 and EFR32xG14 device families.
+    </release>
+    <release version="2.7.0" date="2019-11-12">
+      Changed pack names and version number sequence.
+    </release>
+  </releases>
+
+  <keywords>
+    <!-- keywords for indexing -->
+    <keyword>Silicon Labs</keyword>
+    <keyword>Device Support</keyword>
+    <keyword>Device Family Package Silicon Labs</keyword>
+    <keyword>EFR32BG22</keyword>
+    <keyword>EFR32</keyword>
+    <keyword>Blue Gecko</keyword>
+    <keyword>Gecko</keyword>
+  </keywords>
+
+  <devices>
+    <family Dfamily="EFR32BG22 Series" Dvendor="Silicon Labs:21">
+      <processor Dcore="Cortex-M33" DcoreVersion="r0p4" Dfpu="1" Dmpu="1" Dendian="Little-endian"/>
+      <processor Dclock="38400000"/>
+      <description>
+32-bit ARM Cortex-M33 core with 80 MHz maximum operating frequency.
+      </description>
+
+      <subFamily DsubFamily="EFR32BG22C112">
+        <!-- *************************  Device 'EFR32BG22C112F352GM32'  ***************************** -->
+        <device Dname="EFR32BG22C112F352GM32">
+          <compile header="Device/SiliconLabs/EFR32BG22/Include/em_device.h"  define="EFR32BG22C112F352GM32"/>
+          <debug      svd="SVD/EFR32BG22/EFR32BG22C112F352GM32.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00058000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00008000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00058000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00058000"  default="0"  style="IAR"/>
+        </device>
+
+      </subFamily>
+
+      <subFamily DsubFamily="EFR32BG22C222">
+        <!-- *************************  Device 'EFR32BG22C222F352GM32'  ***************************** -->
+        <device Dname="EFR32BG22C222F352GM32">
+          <compile header="Device/SiliconLabs/EFR32BG22/Include/em_device.h"  define="EFR32BG22C222F352GM32"/>
+          <debug      svd="SVD/EFR32BG22/EFR32BG22C222F352GM32.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00058000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00008000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00058000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00058000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'EFR32BG22C222F352GM40'  ***************************** -->
+        <device Dname="EFR32BG22C222F352GM40">
+          <compile header="Device/SiliconLabs/EFR32BG22/Include/em_device.h"  define="EFR32BG22C222F352GM40"/>
+          <debug      svd="SVD/EFR32BG22/EFR32BG22C222F352GM40.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00058000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00008000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00058000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00058000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'EFR32BG22C222F352GN32'  ***************************** -->
+        <device Dname="EFR32BG22C222F352GN32">
+          <compile header="Device/SiliconLabs/EFR32BG22/Include/em_device.h"  define="EFR32BG22C222F352GN32"/>
+          <debug      svd="SVD/EFR32BG22/EFR32BG22C222F352GN32.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00058000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00008000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00058000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00058000"  default="0"  style="IAR"/>
+        </device>
+
+      </subFamily>
+
+      <subFamily DsubFamily="EFR32BG22C224">
+        <!-- *************************  Device 'EFR32BG22C224F512GM32'  ***************************** -->
+        <device Dname="EFR32BG22C224F512GM32">
+          <compile header="Device/SiliconLabs/EFR32BG22/Include/em_device.h"  define="EFR32BG22C224F512GM32"/>
+          <debug      svd="SVD/EFR32BG22/EFR32BG22C224F512GM32.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00080000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00008000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00080000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00080000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'EFR32BG22C224F512GM40'  ***************************** -->
+        <device Dname="EFR32BG22C224F512GM40">
+          <compile header="Device/SiliconLabs/EFR32BG22/Include/em_device.h"  define="EFR32BG22C224F512GM40"/>
+          <debug      svd="SVD/EFR32BG22/EFR32BG22C224F512GM40.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00080000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00008000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00080000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00080000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'EFR32BG22C224F512GN32'  ***************************** -->
+        <device Dname="EFR32BG22C224F512GN32">
+          <compile header="Device/SiliconLabs/EFR32BG22/Include/em_device.h"  define="EFR32BG22C224F512GN32"/>
+          <debug      svd="SVD/EFR32BG22/EFR32BG22C224F512GN32.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00080000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00008000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00080000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00080000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'EFR32BG22C224F512IM32'  ***************************** -->
+        <device Dname="EFR32BG22C224F512IM32">
+          <compile header="Device/SiliconLabs/EFR32BG22/Include/em_device.h"  define="EFR32BG22C224F512IM32"/>
+          <debug      svd="SVD/EFR32BG22/EFR32BG22C224F512IM32.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00080000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00008000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00080000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00080000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'EFR32BG22C224F512IM40'  ***************************** -->
+        <device Dname="EFR32BG22C224F512IM40">
+          <compile header="Device/SiliconLabs/EFR32BG22/Include/em_device.h"  define="EFR32BG22C224F512IM40"/>
+          <debug      svd="SVD/EFR32BG22/EFR32BG22C224F512IM40.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00080000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00008000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00080000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00080000"  default="0"  style="IAR"/>
+        </device>
+
+      </subFamily>
+
+    </family>
+  </devices>
+
+  <conditions>
+    <!-- Compiler Conditions -->
+    <condition id="Compiler GCC">
+      <require Tcompiler="GCC"/>
+    </condition>
+
+    <!-- Device Conditions -->
+    <condition id="EFR32BG22">
+      <description>Silicon Labs EFR32BG22 device series</description>
+      <require Dvendor="Silicon Labs:21" Dname="EFR32BG22*"/>
+      <require Cclass="CMSIS" Cgroup="CORE"/>
+    </condition>
+  </conditions>
+
+  <components>
+    <component Cclass="Device" Cgroup="Startup" Cversion="2.7.3" condition="EFR32BG22">
+      <description>System Startup for Silicon Labs EFR32BG22 device series</description>
+      <files>
+        <!-- include folder -->
+        <file category="include" name="Device/SiliconLabs/EFR32BG22/Include/"/>
+        <file category="header"  name="Device/SiliconLabs/EFR32BG22/Include/em_device.h"/>
+        <!-- startup files -->
+        <file category="source"  name="Device/SiliconLabs/EFR32BG22/Source/GCC/startup_efr32bg22.S" condition="Compiler GCC"   attr="config" version="2.7.3"/>
+        <!-- linker command file -->
+        <file category="linkerScript"  name="Device/SiliconLabs/EFR32BG22/Source/GCC/efr32bg22.ld" condition="Compiler GCC" attr="config" version="2.7.3"/>
+        <!-- system file -->
+        <file category="source"  name="Device/SiliconLabs/EFR32BG22/Source/system_efr32bg22.c" attr="config" version="2.7.3"/>
+      </files>
+    </component>
+  </components>
+</package>

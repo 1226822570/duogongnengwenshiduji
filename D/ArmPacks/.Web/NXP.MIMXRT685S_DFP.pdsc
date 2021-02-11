@@ -1,0 +1,1449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="PACK.xsd" schemaVersion="1.4">
+  <name>MIMXRT685S_DFP</name>
+  <vendor>NXP</vendor>
+  <description>Device Family Pack for MIMXRT685S</description>
+  <url>http://mcuxpresso.nxp.com/cmsis_pack/repo/</url>
+  <license>Licenses.txt</license>
+  <releases>
+    <release version="12.0.0" date="2020-02-27">NXP CMSIS Packs based on MCUXpresso SDK 2.7.0</release>
+  </releases>
+  <keywords>
+    <keyword>Device Family Pack</keyword>
+  </keywords>
+  <taxonomy>
+    <description Cclass="Board Support" Cgroup="SDK Project Template">NXP MCUXpresso SDK Project Template</description>
+    <description Cclass="Device" Cgroup="SDK Project Template">NXP MCUXpresso SDK RTE Device Project Template</description>
+    <description Cclass="Device" Cgroup="SDK Drivers">NXP MCUXpresso SDK Peripheral Drivers</description>
+    <description Cclass="Device" Cgroup="SDK Utilities">NXP MCUXpresso SDK Utilities</description>
+    <description Cclass="Device" Cgroup="Startup">NXP MCUXpresso SDK Start up</description>
+    <description Cclass="CMSIS Driver">NXP MCUXpresso SDK Peripheral CMSIS Drivers</description>
+  </taxonomy>
+  <requirements>
+    <packages>
+      <package name="CMSIS" vendor="ARM"/>
+    </packages>
+    <languages>
+      <language name="C" version="99"/>
+    </languages>
+  </requirements>
+  <devices>
+    <family Dfamily="MIMXRT685S" Dvendor="NXP:11">
+      <debugconfig default="swd" clock="5000000" swj="true"/>
+      <description>The MIMXRT685S are ARM Cortex-M33 based microcontrollers for embedded applications.</description>
+      <device Dname="MIMXRT685S">
+        <processor Pname="cm33" Dcore="Cortex-M33" Dfpu="SP_FPU" Dmpu="MPU" Dtz="TZ" Ddsp="DSP" Dendian="Little-endian" Dclock="275000000"/>
+        <environment Pname="cm33" name="iar">
+          <file category="linkerfile" name="iar/MIMXRT685Sxxxx_cm33_flash.icf"/>
+        </environment>
+        <sequences>
+          <sequence name="EnableDebugMailbox">
+            <block>
+      __var status=0x55aa;
+      Message(0, "RT6xx connect srcipt start");
+
+      // Read APIDR
+      __dp = 0;
+      __ap = 2;
+      status = ReadAP(0xFC);
+      Message(0, "APIDR: 0x%08X", status);
+
+      // Read DPIDR
+      __dp = 0;
+      __ap = 2;
+      status = ReadDP(0x0);
+      Message(0, "DPIDR: 0x%08X", status);
+
+      // Active DebugMailbox
+      __dp = 0;
+      __ap = 2;
+      WriteAP(0x0, 0x00000021);
+      DAP_Delay(30000);
+      ReadAP(0x0);
+
+      // Enter Debug Session
+      __dp = 0;
+      __ap = 2;
+      WriteAP(0x4, 0x00000007);
+      DAP_Delay(30000);
+      ReadAP(0x0);
+
+      __dp = 0;
+      __ap = 0;
+
+      Message(0, "RT6xx connect srcipt end");
+    </block>
+          </sequence>
+          <sequence name="DebugPortStart" Pname="cm33">
+            <block>
+      __var SW_DP_ABORT  = 0x0;
+      __var DP_CTRL_STAT = 0x4;
+      __var DP_SELECT    = 0x8;
+      __var powered_down = 0;
+      // Switch to DP Register Bank 0
+      WriteDP(DP_SELECT, 0x00000000);
+
+      // Read DP CTRL/STAT Register and check if CSYSPWRUPACK and CDBGPWRUPACK bits are set
+      powered_down = ((ReadDP(DP_CTRL_STAT) &amp; 0xA0000000) != 0xA0000000);
+    </block>
+            <control if="powered_down">
+              <block>
+        // Request Debug/System Power-Up
+        WriteDP(DP_CTRL_STAT, 0x50000000);
+      </block>
+              <!-- Wait for Power-Up Request to be acknowledged -->
+              <control while="(ReadDP(DP_CTRL_STAT) &amp; 0xA0000000) != 0xA0000000" timeout="1000000"/>
+              <!-- SWD Specific Part of sequence -->
+              <control if="(__protocol &amp; 0xFFFF) == 2">
+                <block>
+          // Init AP Transfer Mode, Transaction Counter, and Lane Mask (Normal Transfer Mode, Include all Byte Lanes)
+          WriteDP(DP_CTRL_STAT, 0x50000F00);
+
+          // Clear WDATAERR, STICKYORUN, STICKYCMP, and STICKYERR bits of CTRL/STAT Register by write to ABORT register
+          WriteDP(SW_DP_ABORT, 0x0000001E);
+
+          Sequence("EnableDebugMailbox");
+        </block>
+              </control>
+            </control>
+          </sequence>
+          <sequence name="WaitForStopAfterReset" Pname="cm33">
+            <block>
+      __var SCS_Addr    = 0xE000E000;
+      __var DHCSR_Addr  = SCS_Addr + 0xDF0;
+
+      // Give bootloader time to do what it needs to do
+      DAP_Delay(BootTime);  // try 10ms
+
+      Sequence("EnableDebugMailbox");
+    </block>
+            <!-- Reset Recovery: Wait for DHCSR.S_RESET_ST bit to clear on read -->
+            <control while="(Read32(DHCSR_Addr) &amp; 0x02000000)" timeout="500000"/>
+            <control if="(Read32(DHCSR_Addr) &amp; 0x00020000) == 0">
+              <block>
+        Write32(DHCSR_Addr, 0xA05F0003);  // Force halt until finding a proper catch. Probably works better from flash.
+      </block>
+            </control>
+          </sequence>
+          <sequence name="ResetHardware" Pname="cm33">
+            <block>
+      __var nReset      = 0x80;
+      __var canReadPins = 0;
+      __var SCS_Addr    = 0xE000E000;
+      __var DHCSR_Addr  = SCS_Addr + 0xDF0;
+
+      // De-assert nRESET line
+      canReadPins = (DAP_SWJ_Pins(0x00, nReset, 0) != 0xFFFFFFFF);
+    </block>
+            <!-- Keep reset active for 50 ms -->
+            <control while="1" timeout="50000"/>
+            <control if="canReadPins">
+              <!-- Assert nRESET line and wait max. 1s for recovery -->
+              <control while="(DAP_SWJ_Pins(nReset, nReset, 0) &amp; nReset) == 0" timeout="1000000"/>
+            </control>
+            <control if="!canReadPins">
+              <block>
+        // Assert nRESET line
+        DAP_SWJ_Pins(nReset, nReset, 0);
+      </block>
+              <!-- Wait 100ms for recovery if nRESET not readable -->
+              <control while="1" timeout="100000"/>
+            </control>
+            <control if="(__connection &amp; (1 &lt;&lt; 17)) == 0">
+              <block>
+        Sequence("WaitForStopAfterReset");
+      </block>
+            </control>
+          </sequence>
+          <sequence name="TraceStart">
+            <control if="__traceout &amp; 0x1" info="SWO Trace output selected">
+              <block>
+        // Sequence("EnableTraceClk");       // Enable and configure trace clock
+      </block>
+              <control if="SWO_Pin == 0" info="SWO via PIO2_24">
+                <block>
+          Write32(0x40004160, 0x00000001); // Configure PIO2_24: FUNC - 1
+        </block>
+              </control>
+              <control if="SWO_Pin == 1" info="SWO via PIO2_31">
+                <block>
+          Write32(0x4000417C, 0x00000005); // Configure PIO2_31: FUNC - 5
+        </block>
+              </control>
+            </control>
+          </sequence>
+          <sequence name="ResetSystem" Pname="cm33">
+            <block>
+      __dp = 0;
+      __ap = 0;
+       // System Control Space (SCS) offset as defined in Armv6-M/Armv7-M.
+       __var SCS_Addr   = 0xE000E000;
+       __var AIRCR_Addr = SCS_Addr + 0xD0C;
+       __var DHCSR_Addr = SCS_Addr + 0xDF0;
+
+       __errorcontrol = 1;
+       // Execute SYSRESETREQ via AIRCR
+       Write32(AIRCR_Addr, 0x05FA0004);
+       __errorcontrol = 0;
+      Sequence("WaitForStopAfterReset");
+    </block>
+          </sequence>
+        </sequences>
+        <debugvars configfile="arm/MIMXRT6xx.dbgconf">
+  // Debug Access Variables, can be modified by user via copies of DBGCONF files as created by uVision. Also see sub-family level.
+  __var SWO_Pin               = 0;                    // Serial Wire Output pin: 0 = PIO2_24, 1 = PIO2_31
+  __var Dbg_CR                = 0x00000000;           // DBG_CR
+  __var BootTime              = 10000;                // 10 milliseconds
+</debugvars>
+        <memory name="SRAM" start="0x00080000" size="0x180000" access="rw" default="1"/>
+        <memory name="SRAM_DSP" start="0x00200000" size="0x280000" access="rw" default="1"/>
+        <memory name="SRAM_ROM" start="0x00000000" size="0x020000" access="rw" default="1"/>
+        <memory name="SRAM_SHARED" start="0x00020000" size="0x060000" access="rw" default="1"/>
+        <memory name="USB_RAM" start="0x40140000" size="0x4000" access="rw" default="1"/>
+        <algorithm name="arm/MIMXRT6XX_EVK_FLEXSPI.FLM" start="0x08000000" size="0x08000000" RAMstart="0x0002c000" RAMsize="0x00001000" default="1"/>
+        <algorithm name="arm/MIMXRT6XX_EVK_FLEXSPI_S.FLM" start="0x18000000" size="0x08000000" RAMstart="0x0002c000" RAMsize="0x00001000" default="1"/>
+        <debug svd="MIMXRT685S_cm33.xml" Pname="cm33"/>
+        <variant Dvariant="MIMXRT685SFVKB">
+          <compile Pname="cm33" header="fsl_device_registers.h" define="CPU_MIMXRT685SFVKB_cm33"/>
+        </variant>
+        <variant Dvariant="MIMXRT685SFFOB">
+          <compile Pname="cm33" header="fsl_device_registers.h" define="CPU_MIMXRT685SFFOB_cm33"/>
+        </variant>
+        <variant Dvariant="MIMXRT685SFAWBR">
+          <compile Pname="cm33" header="fsl_device_registers.h" define="CPU_MIMXRT685SFAWBR_cm33"/>
+        </variant>
+      </device>
+    </family>
+  </devices>
+  <conditions>
+    <condition id="device.MIMXRT685S_AND_component.serial_manager_AND_component.usart_adapter_AND_device.MIMXRT685S_startup_AND_driver.cache_cache64_AND_driver.clock_AND_driver.common_AND_driver.flexcomm_usart_AND_driver.flexspi_AND_driver.lpc_gpio_AND_driver.lpc_iopctl_AND_driver.power_AND_driver.reset_AND_utility.debug_console">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="debug_console"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="usart"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="usart_adapter"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="iopctl"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="gpio"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="reset"/>
+      <require Cclass="Device" Cgroup="Startup" Csub="MIMXRT685S_startup"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="clock"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="power"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="cache"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexspi"/>
+    </condition>
+    <condition id="device.MIMXRT685S">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_component.lpc_gpio_adapter_AND_component.timer_manager_AND_driver.common">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="timer_manager"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="lpc_gpio_adapter"/>
+    </condition>
+    <condition id="component.flexcomm_i2c_adapter_OR_component.i3c_adapter">
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm_i2c_adapter"/>
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="i3c_adapter"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND__component.flexcomm_i2c_adapter_OR_component.i3c_adapter__AND_driver.common">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require condition="component.flexcomm_i2c_adapter_OR_component.i3c_adapter"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_component.osa_AND_driver.common">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="osa"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.codec_AND_driver.cs42888">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="cs42888"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="codec"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.common_AND_driver.ctimer">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="ctimer"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.common_AND_driver.flexcomm_i2c">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="i2c"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.common_AND_driver.flexcomm_spi">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="spi"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.common_AND_driver.i3c">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="i3c"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.common">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.common_AND_driver.lpc_crc">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="lpc_crc"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.inputmux_AND_driver.lpc_gpio_AND_driver.pint">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="gpio"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="inputmux"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="pint"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_component.lists_AND_driver.common">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="lists"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.common_AND_driver.mrt">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="mrt"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.common_AND_utility.debug_console">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="debug_console"/>
+    </condition>
+    <condition id="component.lists_AND_driver.common">
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="lists"/>
+    </condition>
+    <condition id="component.serial_manager_swo_OR_component.serial_manager_uart_OR_component.serial_manager_usb_cdc_virtual">
+      <accept Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager_uart"/>
+      <accept Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager_swo"/>
+      <accept Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager_usb_cdc_virtual"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND__component.lists_AND_driver.common__AND__component.serial_manager_swo_OR_component.serial_manager_uart_OR_component.serial_manager_usb_cdc_virtual_">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require condition="component.lists_AND_driver.common"/>
+      <require condition="component.serial_manager_swo_OR_component.serial_manager_uart_OR_component.serial_manager_usb_cdc_virtual"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_component.serial_manager_AND_core_type.cm33_AND_driver.common">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager"/>
+      <require Dcore="Cortex-M33" Dfpu="SP_FPU"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.flexcomm_usart">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="usart"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.codec_AND_driver.tfa9xxx">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="tfa9xxx"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="codec"/>
+    </condition>
+    <condition id="component.ctimer_adapter_OR_component.mrt_adapter">
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="ctimer_adapter"/>
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="mrt_adapter"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND__component.ctimer_adapter_OR_component.mrt_adapter__AND__component.lists_AND_driver.common_">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require condition="component.lists_AND_driver.common"/>
+      <require condition="component.ctimer_adapter_OR_component.mrt_adapter"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.common_AND_driver.trng">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="trng"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.common_AND_driver.flexcomm_AND_driver.flexcomm_usart">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="usart"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.codec_AND_driver.wm8904">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="wm8904"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="codec"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_CMSIS_Include_core_cm33">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="CMSIS" Cgroup="CORE"/>
+    </condition>
+    <condition id="mdk">
+      <require Tcompiler="ARMCC"/>
+    </condition>
+    <condition id="iar">
+      <require Tcompiler="IAR"/>
+    </condition>
+    <condition id="core_type.cm33_AND_mdk">
+      <require Tcompiler="ARMCC"/>
+      <require Dname="MIMXRT685S"/>
+      <require Dcore="Cortex-M33" Dfpu="SP_FPU"/>
+    </condition>
+    <condition id="core_type.cm33_AND_iar">
+      <require Tcompiler="IAR"/>
+      <require Dname="MIMXRT685S"/>
+      <require Dcore="Cortex-M33" Dfpu="SP_FPU"/>
+    </condition>
+    <condition id="core_id.cm33_AND_core_type.cm33">
+      <accept Pname="cm33" Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Pname="cm33" Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Pname="cm33" Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Pname="cm33" Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Pname="cm33" Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Pname="cm33" Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Dcore="Cortex-M33" Dfpu="SP_FPU"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_CMSIS_Driver_Include.I2C_AND_RTE_Device_AND_driver.flexcomm_i2c_dma">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="i2c_dma"/>
+      <require Cclass="CMSIS Driver" Cgroup="I2C" Capiversion="2.3.0"/>
+      <require Cclass="Device" Cgroup="SDK Project Template" Csub="RTE_Device"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_CMSIS_Driver_Include.SPI_AND_RTE_Device_AND_driver.flexcomm_spi_dma">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="spi_dma"/>
+      <require Cclass="CMSIS Driver" Cgroup="SPI" Capiversion="2.2.0"/>
+      <require Cclass="Device" Cgroup="SDK Project Template" Csub="RTE_Device"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_CMSIS_Driver_Include.USART_AND_RTE_Device_AND_driver.flexcomm_usart_dma">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="usart_dma"/>
+      <require Cclass="CMSIS Driver" Cgroup="USART" Capiversion="2.3.0"/>
+      <require Cclass="Device" Cgroup="SDK Project Template" Csub="RTE_Device"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_device.MIMXRT685S_CMSIS_AND_driver.clock_AND_driver.reset">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="reset"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="clock"/>
+      <require Cclass="Device" Cgroup="Startup" Csub="MIMXRT685S_startup"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_component.codec_i2c_AND_driver.common">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="codec_i2c"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.dmic_AND_driver.lpc_dma">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dmic"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dma"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.common_AND_driver.power">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="power"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.common_AND_driver.flexcomm">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.common_AND_driver.flexcomm_AND_driver.flexcomm_i2c_AND_driver.lpc_dma">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="i2c"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dma"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.flexcomm_i2s_AND_driver.lpc_dma">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm_i2s"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dma"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.flexcomm_AND_driver.flexcomm_spi_AND_driver.lpc_dma">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="spi"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dma"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.flexcomm">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.flexcomm_AND_driver.flexcomm_usart_AND_driver.lpc_dma">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="usart"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dma"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.flexspi_AND_driver.lpc_dma">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexspi"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dma"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_CMSIS_Driver_Include.I2C">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="CMSIS Driver" Cgroup="I2C" Capiversion="2.3.0"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.common_AND_driver.inputmux_connections">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="inputmux_connections"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_driver.power">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="power"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_utility.debug_console">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="debug_console"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_component.serial_manager_AND_driver.common">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+    </condition>
+    <condition id="device.MIMXRT685S_AND_component.lists_AND_driver.common_AND_utility.debug_console">
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFVKB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFFOB" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685S" Dvariant="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <accept Dname="MIMXRT685SFAWBR" Dvendor="NXP:11"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="debug_console"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="lists"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+    </condition>
+  </conditions>
+  <components>
+    <component Cclass="Board Support" Cgroup="SDK Project Template" Csub="project_template" Cvariant="MIMXRT685S" Cversion="1.0.0" condition="device.MIMXRT685S_AND_component.serial_manager_AND_component.usart_adapter_AND_device.MIMXRT685S_startup_AND_driver.cache_cache64_AND_driver.clock_AND_driver.common_AND_driver.flexcomm_usart_AND_driver.flexspi_AND_driver.lpc_gpio_AND_driver.lpc_iopctl_AND_driver.power_AND_driver.reset_AND_utility.debug_console" isDefaultVariant="1">
+      <description/>
+      <files>
+        <file category="sourceC" attr="config" name="project_template/board.c" version="1.0.0"/>
+        <file category="header" attr="config" name="project_template/board.h" version="1.0.0"/>
+        <file category="sourceC" attr="config" name="project_template/clock_config.c" version="1.0.0"/>
+        <file category="header" attr="config" name="project_template/clock_config.h" version="1.0.0"/>
+        <file category="sourceC" attr="config" name="project_template/peripherals.c" version="1.0.0"/>
+        <file category="header" attr="config" name="project_template/peripherals.h" version="1.0.0"/>
+        <file category="sourceC" attr="config" name="project_template/pin_mux.c" version="1.0.0"/>
+        <file category="header" attr="config" name="project_template/pin_mux.h" version="1.0.0"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Project Template" Csub="RTE_Device" Cversion="1.0.0" condition="device.MIMXRT685S">
+      <description/>
+      <files>
+        <file category="header" attr="config" name="template/RTE_Device.h" version="1.0.0"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="button" Cversion="1.0.0" condition="device.MIMXRT685S_AND_component.lpc_gpio_adapter_AND_component.timer_manager_AND_driver.common">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/button/button.c"/>
+        <file category="header" name="components/button/button.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="codec_i2c" Cversion="2.1.0" condition="device.MIMXRT685S_AND__component.flexcomm_i2c_adapter_OR_component.i3c_adapter__AND_driver.common">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/codec/i2c/fsl_codec_i2c.c"/>
+        <file category="header" name="components/codec/i2c/fsl_codec_i2c.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="common_task" Cversion="1.0.0" condition="device.MIMXRT685S_AND_component.osa_AND_driver.common">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/common_task/common_task.c"/>
+        <file category="header" name="components/common_task/common_task.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="cs42888_adapter" Cversion="2.2.1" condition="device.MIMXRT685S_AND_driver.codec_AND_driver.cs42888">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/codec/port/cs42888/fsl_codec_adapter.c"/>
+        <file category="header" name="components/codec/port/cs42888/fsl_codec_adapter.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="ctimer_adapter" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common_AND_driver.ctimer">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/timer/ctimer_adapter.c"/>
+        <file category="header" name="components/timer/timer.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm_i2c_adapter" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common_AND_driver.flexcomm_i2c">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/i2c/flexcomm_i2c_adapter.c"/>
+        <file category="header" name="components/i2c/i2c.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm_spi_adapter" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common_AND_driver.flexcomm_spi">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/spi/flexcomm_spi_adapter.c"/>
+        <file category="header" name="components/spi/spi.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="i3c_adapter" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common_AND_driver.i3c">
+      <description/>
+      <files>
+        <file category="header" name="components/i2c/i2c.h"/>
+        <file category="sourceC" name="components/i2c/i3c_adapter.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="led" Cversion="1.0.0" condition="device.MIMXRT685S_AND_component.lpc_gpio_adapter_AND_component.timer_manager_AND_driver.common">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/led/led.c"/>
+        <file category="header" name="components/led/led.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="lists" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/lists/generic_list.c"/>
+        <file category="header" name="components/lists/generic_list.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="lpc_crc_adapter" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common_AND_driver.lpc_crc">
+      <description/>
+      <files>
+        <file category="header" name="components/crc/crc.h"/>
+        <file category="sourceC" name="components/crc/lpc_crc_adapter.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="lpc_gpio_adapter" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.inputmux_AND_driver.lpc_gpio_AND_driver.pint">
+      <description/>
+      <files>
+        <file category="header" name="components/gpio/gpio.h"/>
+        <file category="sourceC" name="components/gpio/lpc_gpio_adapter.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="mem_manager" Cversion="1.0.0" condition="device.MIMXRT685S_AND_component.lists_AND_driver.common">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/mem_manager/mem_manager.c"/>
+        <file category="header" name="components/mem_manager/mem_manager.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="mrt_adapter" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common_AND_driver.mrt">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/timer/mrt_adapter.c"/>
+        <file category="header" name="components/timer/timer.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="osa" Cversion="1.0.0" condition="device.MIMXRT685S_AND_component.lists_AND_driver.common">
+      <description/>
+      <files>
+        <file category="header" name="components/osa/fsl_os_abstraction.h"/>
+        <file category="sourceC" name="components/osa/fsl_os_abstraction_bm.c"/>
+        <file category="header" name="components/osa/fsl_os_abstraction_bm.h"/>
+        <file category="header" name="components/osa/fsl_os_abstraction_config.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="osa_bm" Cversion="1.0.0" condition="device.MIMXRT685S_AND_component.lists_AND_driver.common">
+      <description/>
+      <files>
+        <file category="header" name="components/osa/fsl_os_abstraction.h"/>
+        <file category="sourceC" name="components/osa/fsl_os_abstraction_bm.c"/>
+        <file category="header" name="components/osa/fsl_os_abstraction_bm.h"/>
+        <file category="header" name="components/osa/fsl_os_abstraction_config.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="panic" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common_AND_utility.debug_console">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/panic/panic.c"/>
+        <file category="header" name="components/panic/panic.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="pwm_ctimer_adapter" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common_AND_driver.ctimer">
+      <description/>
+      <files>
+        <file category="header" name="components/pwm/pwm.h"/>
+        <file category="sourceC" name="components/pwm/pwm_ctimer_adapter.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager" Cversion="1.0.0" condition="device.MIMXRT685S_AND__component.lists_AND_driver.common__AND__component.serial_manager_swo_OR_component.serial_manager_uart_OR_component.serial_manager_usb_cdc_virtual_">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/serial_manager/serial_manager.c"/>
+        <file category="header" name="components/serial_manager/serial_manager.h"/>
+        <file category="header" name="components/serial_manager/serial_port_internal.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager_swo" Cversion="1.0.0" condition="device.MIMXRT685S_AND_component.serial_manager_AND_core_type.cm33_AND_driver.common">
+      <description/>
+      <RTE_Components_h>
+#define SERIAL_PORT_TYPE_SWO 1
+</RTE_Components_h>
+      <files>
+        <file category="sourceC" name="components/serial_manager/serial_port_swo.c"/>
+        <file category="header" name="components/serial_manager/serial_port_swo.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager_uart" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.flexcomm_usart">
+      <description/>
+      <RTE_Components_h>
+#define SERIAL_PORT_TYPE_UART 1
+</RTE_Components_h>
+      <files>
+        <file category="sourceC" name="components/serial_manager/serial_port_uart.c"/>
+        <file category="header" name="components/serial_manager/serial_port_uart.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager_usb_cdc_virtual" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common">
+      <description/>
+      <RTE_Components_h>
+#define SERIAL_PORT_TYPE_USBCDC_VIRTUAL 1
+#define DEBUG_CONSOLE_TRANSFER_NON_BLOCKING 
+</RTE_Components_h>
+      <files>
+        <file category="sourceC" name="components/serial_manager/serial_port_usb_virtual.c"/>
+        <file category="header" name="components/serial_manager/serial_port_usb_virtual.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="software_crc_adapter" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common">
+      <description/>
+      <files>
+        <file category="header" name="components/crc/crc.h"/>
+        <file category="sourceC" name="components/crc/software_crc_adapter.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="tfa9xxx_adapter" Cversion="2.2.0" condition="device.MIMXRT685S_AND_driver.codec_AND_driver.tfa9xxx">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/codec/port/tfa9xxx/fsl_codec_adapter.c"/>
+        <file category="header" name="components/codec/port/tfa9xxx/fsl_codec_adapter.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="timer_manager" Cversion="1.0.0" condition="device.MIMXRT685S_AND__component.ctimer_adapter_OR_component.mrt_adapter__AND__component.lists_AND_driver.common_">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/timer_manager/timer_manager.c"/>
+        <file category="header" name="components/timer_manager/timer_manager.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="trng_adapter" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common_AND_driver.trng">
+      <description/>
+      <files>
+        <file category="header" name="components/rng/rng.h"/>
+        <file category="sourceC" name="components/rng/trng_adapter.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="usart_adapter" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common_AND_driver.flexcomm_AND_driver.flexcomm_usart">
+      <description/>
+      <files>
+        <file category="header" name="components/uart/uart.h"/>
+        <file category="sourceC" name="components/uart/usart_adapter.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="wm8904_adapter" Cversion="2.2.0" condition="device.MIMXRT685S_AND_driver.codec_AND_driver.wm8904">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/codec/port/wm8904/fsl_codec_adapter.c"/>
+        <file category="header" name="components/codec/port/wm8904/fsl_codec_adapter.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="Startup" Csub="MIMXRT685S_startup" Cversion="1.0.0" condition="device.MIMXRT685S_AND_CMSIS_Include_core_cm33">
+      <description/>
+      <files>
+        <file condition="mdk" category="sourceAsm" attr="config" name="arm/startup_MIMXRT685S_cm33.s" version="1.0.0"/>
+        <file condition="iar" category="sourceAsm" attr="config" name="iar/startup_MIMXRT685S_cm33.s" version="1.0.0"/>
+        <file category="sourceC" attr="config" name="system_MIMXRT685S_cm33.c" version="1.0.0"/>
+        <file category="header" attr="config" name="system_MIMXRT685S_cm33.h" version="1.0.0"/>
+        <file condition="core_type.cm33_AND_mdk" category="linkerScript" attr="config" name="arm/MIMXRT685Sxxxx_cm33_flash.scf" version="1.0.0"/>
+        <file condition="core_type.cm33_AND_mdk" category="linkerScript" attr="config" name="arm/MIMXRT685Sxxxx_cm33_flash_ns.scf" version="1.0.0"/>
+        <file condition="core_type.cm33_AND_mdk" category="linkerScript" attr="config" name="arm/MIMXRT685Sxxxx_cm33_flash_s.scf" version="1.0.0"/>
+        <file condition="core_type.cm33_AND_mdk" category="linkerScript" attr="config" name="arm/MIMXRT685Sxxxx_cm33_ram.scf" version="1.0.0"/>
+        <file condition="core_type.cm33_AND_mdk" category="linkerScript" attr="config" name="arm/MIMXRT685Sxxxx_cm33_ram_ns.scf" version="1.0.0"/>
+        <file condition="core_type.cm33_AND_mdk" category="linkerScript" attr="config" name="arm/MIMXRT685Sxxxx_cm33_ram_s.scf" version="1.0.0"/>
+        <file condition="core_type.cm33_AND_iar" category="linkerScript" attr="config" name="iar/MIMXRT685Sxxxx_cm33_flash.icf" version="1.0.0"/>
+        <file condition="core_type.cm33_AND_iar" category="linkerScript" attr="config" name="iar/MIMXRT685Sxxxx_cm33_flash_ns.icf" version="1.0.0"/>
+        <file condition="core_type.cm33_AND_iar" category="linkerScript" attr="config" name="iar/MIMXRT685Sxxxx_cm33_flash_s.icf" version="1.0.0"/>
+        <file condition="core_type.cm33_AND_iar" category="linkerScript" attr="config" name="iar/MIMXRT685Sxxxx_cm33_ram.icf" version="1.0.0"/>
+        <file condition="core_type.cm33_AND_iar" category="linkerScript" attr="config" name="iar/MIMXRT685Sxxxx_cm33_ram_ns.icf" version="1.0.0"/>
+        <file condition="core_type.cm33_AND_iar" category="linkerScript" attr="config" name="iar/MIMXRT685Sxxxx_cm33_ram_s.icf" version="1.0.0"/>
+        <file condition="core_id.cm33_AND_core_type.cm33" category="header" attr="config" name="MIMXRT685S_cm33.h" version="1.0.0"/>
+        <file condition="core_id.cm33_AND_core_type.cm33" category="header" attr="config" name="MIMXRT685S_cm33_features.h" version="1.0.0"/>
+        <file condition="core_id.cm33_AND_core_type.cm33" category="header" attr="config" name="fsl_device_registers.h" version="1.0.0"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="acmp" Cversion="2.0.5" condition="device.MIMXRT685S_AND_driver.common">
+      <description>ACMP Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_acmp.c"/>
+        <file category="header" name="drivers/fsl_acmp.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="cache" Cversion="2.0.1" condition="device.MIMXRT685S_AND_driver.common">
+      <description>CACHE Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_cache.c"/>
+        <file category="header" name="drivers/fsl_cache.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="casper" Cversion="2.0.9" condition="device.MIMXRT685S_AND_driver.common">
+      <description>CASPER Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_casper.c"/>
+        <file category="header" name="drivers/fsl_casper.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="clock" Cversion="2.6.1" condition="device.MIMXRT685S_AND_driver.common">
+      <description>Clock Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_clock.c"/>
+        <file category="header" name="drivers/fsl_clock.h"/>
+      </files>
+    </component>
+    <component Cclass="CMSIS Driver" Cgroup="I2C" Csub="flexcomm_i2c_cmsis" Cversion="2.0.0" condition="device.MIMXRT685S_AND_CMSIS_Driver_Include.I2C_AND_RTE_Device_AND_driver.flexcomm_i2c_dma">
+      <description>I2C CMSIS Driver</description>
+      <files>
+        <file category="sourceC" name="cmsis_drivers/fsl_i2c_cmsis.c"/>
+        <file category="header" name="cmsis_drivers/fsl_i2c_cmsis.h"/>
+      </files>
+    </component>
+    <component Cclass="CMSIS Driver" Cgroup="SPI" Csub="flexcomm_spi_cmsis" Cversion="2.0.1" condition="device.MIMXRT685S_AND_CMSIS_Driver_Include.SPI_AND_RTE_Device_AND_driver.flexcomm_spi_dma">
+      <description>SPI CMSIS Driver</description>
+      <files>
+        <file category="sourceC" name="cmsis_drivers/fsl_spi_cmsis.c"/>
+        <file category="header" name="cmsis_drivers/fsl_spi_cmsis.h"/>
+      </files>
+    </component>
+    <component Cclass="CMSIS Driver" Cgroup="USART" Csub="flexcomm_usart_cmsis" Cversion="2.0.0" condition="device.MIMXRT685S_AND_CMSIS_Driver_Include.USART_AND_RTE_Device_AND_driver.flexcomm_usart_dma">
+      <description>USART CMSIS Driver</description>
+      <files>
+        <file category="sourceC" name="cmsis_drivers/fsl_usart_cmsis.c"/>
+        <file category="header" name="cmsis_drivers/fsl_usart_cmsis.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="codec" Cversion="2.2.0" condition="device.MIMXRT685S_AND_driver.common">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/codec/fsl_codec_common.c"/>
+        <file category="header" name="components/codec/fsl_codec_common.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="common" Cversion="2.2.2" condition="device.MIMXRT685S_AND_device.MIMXRT685S_CMSIS_AND_driver.clock_AND_driver.reset">
+      <description>COMMON Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_common.c"/>
+        <file category="header" name="drivers/fsl_common.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="cs42888" Cversion="2.1.1" condition="device.MIMXRT685S_AND_component.codec_i2c_AND_driver.common">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/codec/cs42888/fsl_cs42888.c"/>
+        <file category="header" name="components/codec/cs42888/fsl_cs42888.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="ctimer" Cversion="2.0.3" condition="device.MIMXRT685S_AND_driver.common">
+      <description>CTimer Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_ctimer.c"/>
+        <file category="header" name="drivers/fsl_ctimer.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="dmic" Cversion="2.3.0" condition="device.MIMXRT685S_AND_driver.common">
+      <description>DMIC Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_dmic.c"/>
+        <file category="header" name="drivers/fsl_dmic.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="dmic_dma" Cversion="2.3.0" condition="device.MIMXRT685S_AND_driver.dmic_AND_driver.lpc_dma">
+      <description>DMIC DMA Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_dmic_dma.c"/>
+        <file category="header" name="drivers/fsl_dmic_dma.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="dsp" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common_AND_driver.power">
+      <description>dsp Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_dsp.c"/>
+        <file category="header" name="drivers/fsl_dsp.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm" Cversion="2.0.2" condition="device.MIMXRT685S_AND_driver.common">
+      <description>FLEXCOMM Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_flexcomm.c"/>
+        <file category="header" name="drivers/fsl_flexcomm.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="i2c" Cversion="2.0.7" condition="device.MIMXRT685S_AND_driver.common_AND_driver.flexcomm">
+      <description>I2C Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_i2c.c"/>
+        <file category="header" name="drivers/fsl_i2c.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="i2c_dma" Cversion="2.0.7" condition="device.MIMXRT685S_AND_driver.common_AND_driver.flexcomm_AND_driver.flexcomm_i2c_AND_driver.lpc_dma">
+      <description>I2C Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_i2c_dma.c"/>
+        <file category="header" name="drivers/fsl_i2c_dma.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm_i2s" Cversion="2.2.0" condition="device.MIMXRT685S_AND_driver.common_AND_driver.flexcomm">
+      <description>I2S Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_i2s.c"/>
+        <file category="header" name="drivers/fsl_i2s.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm_i2s_dma" Cversion="2.1.0" condition="device.MIMXRT685S_AND_driver.flexcomm_i2s_AND_driver.lpc_dma">
+      <description>I2S Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_i2s_dma.c"/>
+        <file category="header" name="drivers/fsl_i2s_dma.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="spi" Cversion="2.1.0" condition="device.MIMXRT685S_AND_driver.common_AND_driver.flexcomm">
+      <description>SPI Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_spi.c"/>
+        <file category="header" name="drivers/fsl_spi.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="spi_dma" Cversion="2.1.0" condition="device.MIMXRT685S_AND_driver.flexcomm_AND_driver.flexcomm_spi_AND_driver.lpc_dma">
+      <description>SPI Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_spi_dma.c"/>
+        <file category="header" name="drivers/fsl_spi_dma.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="usart" Cversion="2.1.1" condition="device.MIMXRT685S_AND_driver.flexcomm">
+      <description>USART Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_usart.c"/>
+        <file category="header" name="drivers/fsl_usart.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="usart_dma" Cversion="2.1.1" condition="device.MIMXRT685S_AND_driver.flexcomm_AND_driver.flexcomm_usart_AND_driver.lpc_dma">
+      <description>USART Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_usart_dma.c"/>
+        <file category="header" name="drivers/fsl_usart_dma.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="flexspi" Cversion="2.2.1" condition="device.MIMXRT685S_AND_driver.common">
+      <description>FLEXSPI Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_flexspi.c"/>
+        <file category="header" name="drivers/fsl_flexspi.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="flexspi_dma" Cversion="2.1.0" condition="device.MIMXRT685S_AND_driver.flexspi_AND_driver.lpc_dma">
+      <description>FLEXSPI DMA Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_flexspi_dma.c"/>
+        <file category="header" name="drivers/fsl_flexspi_dma.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="fmeas" Cversion="2.1.1" condition="device.MIMXRT685S_AND_driver.common">
+      <description>FMEAS Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_fmeas.c"/>
+        <file category="header" name="drivers/fsl_fmeas.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="ft6x06" Cversion="1.0.0" condition="device.MIMXRT685S_AND_CMSIS_Driver_Include.I2C">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/ft6x06/fsl_ft6x06.c"/>
+        <file category="header" name="components/ft6x06/fsl_ft6x06.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="fxos8700cq" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/fxos8700cq/fsl_fxos.c"/>
+        <file category="header" name="components/fxos8700cq/fsl_fxos.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="hashcrypt" Cversion="2.1.1" condition="device.MIMXRT685S_AND_driver.common">
+      <description>Hashcrypt Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_hashcrypt.c"/>
+        <file category="header" name="drivers/fsl_hashcrypt.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="i3c" Cversion="2.1.0" condition="device.MIMXRT685S_AND_driver.common">
+      <description>I3C Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_i3c.c"/>
+        <file category="header" name="drivers/fsl_i3c.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="iap" Cversion="2.0.0" condition="device.MIMXRT685S_AND_driver.common">
+      <description>ROMIAP Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_iap.c"/>
+        <file category="header" name="drivers/fsl_iap.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="ili9341" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/ili9341/fsl_ili9341.c"/>
+        <file category="header" name="components/ili9341/fsl_ili9341.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="inputmux" Cversion="2.0.2" condition="device.MIMXRT685S_AND_driver.common_AND_driver.inputmux_connections">
+      <description>INPUTMUX Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_inputmux.c"/>
+        <file category="header" name="drivers/fsl_inputmux.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="inputmux_connections" Cversion="2.0.1" condition="device.MIMXRT685S_AND_driver.common">
+      <description>Inputmux_connections Driver</description>
+      <files>
+        <file category="header" name="drivers/fsl_inputmux_connections.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="lpadc" Cversion="2.2.0" condition="device.MIMXRT685S_AND_driver.common">
+      <description>LPADC Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_lpadc.c"/>
+        <file category="header" name="drivers/fsl_lpadc.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="lpc_crc" Cversion="2.0.2" condition="device.MIMXRT685S_AND_driver.common">
+      <description>CRC Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_crc.c"/>
+        <file category="header" name="drivers/fsl_crc.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="dma" Cversion="2.4.0" condition="device.MIMXRT685S_AND_driver.common">
+      <description>DMA Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_dma.c"/>
+        <file category="header" name="drivers/fsl_dma.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="gpio" Cversion="2.1.5" condition="device.MIMXRT685S_AND_driver.common">
+      <description>GPIO Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_gpio.c"/>
+        <file category="header" name="drivers/fsl_gpio.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="iopctl" Cversion="2.0.0" condition="device.MIMXRT685S_AND_driver.common">
+      <description>iopctl Driver</description>
+      <files>
+        <file category="header" name="drivers/fsl_iopctl.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="lpc_rtc" Cversion="2.1.1" condition="device.MIMXRT685S_AND_driver.common">
+      <description>RTC Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_rtc.c"/>
+        <file category="header" name="drivers/fsl_rtc.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="mpi_loader" Cversion="1.0.0" condition="device.MIMXRT685S">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/mpi_loader/fsl_mpi_loader.c"/>
+        <file category="header" name="components/mpi_loader/fsl_mpi_loader.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="mrt" Cversion="2.0.2" condition="device.MIMXRT685S_AND_driver.common">
+      <description>MRT Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_mrt.c"/>
+        <file category="header" name="drivers/fsl_mrt.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="mu" Cversion="2.0.5" condition="device.MIMXRT685S_AND_driver.common">
+      <description>MU Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_mu.c"/>
+        <file category="header" name="drivers/fsl_mu.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="ostimer" Cversion="2.0.3" condition="device.MIMXRT685S_AND_driver.common">
+      <description>OSTimer Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_ostimer.c"/>
+        <file category="header" name="drivers/fsl_ostimer.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="pca9420" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.power">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/pca9420/fsl_pca9420.c"/>
+        <file category="header" name="components/pca9420/fsl_pca9420.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="pint" Cversion="2.1.6" condition="device.MIMXRT685S_AND_driver.common">
+      <description>PINT Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_pint.c"/>
+        <file category="header" name="drivers/fsl_pint.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="power" Cversion="2.0.0" condition="device.MIMXRT685S_AND_driver.common">
+      <description>Power driver</description>
+      <files>
+        <file condition="mdk" category="library" name="arm/keil_lib_power.lib"/>
+        <file category="sourceC" name="drivers/fsl_power.c"/>
+        <file category="header" name="drivers/fsl_power.h"/>
+        <file condition="iar" category="library" name="iar/iar_lib_power.a"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="powerquad" Cversion="2.0.3" condition="device.MIMXRT685S_AND_driver.common">
+      <description>POWERQUAD Driver</description>
+      <RTE_Components_h>
+#define ARM_MATH_CM33 
+</RTE_Components_h>
+      <files>
+        <file category="header" name="drivers/fsl_powerquad.h"/>
+        <file category="sourceC" name="drivers/fsl_powerquad_basic.c"/>
+        <file category="sourceC" name="drivers/fsl_powerquad_cmsis.c"/>
+        <file category="sourceC" name="drivers/fsl_powerquad_data.c"/>
+        <file category="header" name="drivers/fsl_powerquad_data.h"/>
+        <file category="sourceC" name="drivers/fsl_powerquad_filter.c"/>
+        <file category="sourceC" name="drivers/fsl_powerquad_math.c"/>
+        <file category="sourceC" name="drivers/fsl_powerquad_matrix.c"/>
+        <file category="sourceC" name="drivers/fsl_powerquad_transform.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="PUF" Cversion="2.1.1" condition="device.MIMXRT685S_AND_driver.common">
+      <description>PUF Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_puf.c"/>
+        <file category="header" name="drivers/fsl_puf.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="reset" Cversion="2.0.1" condition="device.MIMXRT685S_AND_driver.common">
+      <description>Reset Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_reset.c"/>
+        <file category="header" name="drivers/fsl_reset.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="sctimer" Cversion="2.1.2" condition="device.MIMXRT685S_AND_driver.common">
+      <description>SCT Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_sctimer.c"/>
+        <file category="header" name="drivers/fsl_sctimer.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="sema42" Cversion="2.0.1" condition="device.MIMXRT685S_AND_driver.common">
+      <description>SEMA42 Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_sema42.c"/>
+        <file category="header" name="drivers/fsl_sema42.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="tfa9xxx" Cversion="2.1.0" condition="device.MIMXRT685S_AND_component.codec_i2c_AND_driver.common">
+      <description/>
+      <files>
+        <file category="other" name="components/codec/tfa9xxx/README.md"/>
+        <file category="sourceC" name="components/codec/tfa9xxx/fsl_tfa9xxx.c"/>
+        <file category="header" name="components/codec/tfa9xxx/fsl_tfa9xxx.h"/>
+        <file category="sourceC" name="components/codec/tfa9xxx/fsl_tfa9xxx_IMX.c"/>
+        <file category="header" name="components/codec/tfa9xxx/tfa_config_TFA9892N1.h"/>
+        <file category="header" name="components/codec/tfa9xxx/tfa_config_TFA9894N1.h"/>
+        <file category="header" name="components/codec/tfa9xxx/tfa_config_TFA9894N2.h"/>
+        <file category="header" name="components/codec/tfa9xxx/vas_tfa_drv/config.h"/>
+        <file category="sourceC" name="components/codec/tfa9xxx/vas_tfa_drv/tfa2_container.c"/>
+        <file category="header" name="components/codec/tfa9xxx/vas_tfa_drv/tfa2_container.h"/>
+        <file category="sourceC" name="components/codec/tfa9xxx/vas_tfa_drv/tfa2_dev.c"/>
+        <file category="header" name="components/codec/tfa9xxx/vas_tfa_drv/tfa2_dev.h"/>
+        <file category="header" name="components/codec/tfa9xxx/vas_tfa_drv/tfa2_dsp_fw.h"/>
+        <file category="sourceC" name="components/codec/tfa9xxx/vas_tfa_drv/tfa2_haptic.c"/>
+        <file category="header" name="components/codec/tfa9xxx/vas_tfa_drv/tfa2_haptic.h"/>
+        <file category="sourceC" name="components/codec/tfa9xxx/vas_tfa_drv/tfa2_init.c"/>
+        <file category="header" name="components/codec/tfa9xxx/vas_tfa_drv/tfa9xxx_parameters.h"/>
+        <file category="sourceC" name="components/codec/tfa9xxx/vas_tfa_drv/tfa_container_crc32.c"/>
+        <file category="header" name="components/codec/tfa9xxx/vas_tfa_drv/tfa_haptic_fw_defs.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="trng" Cversion="2.0.6" condition="device.MIMXRT685S_AND_driver.common">
+      <description>TRNG Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_trng.c"/>
+        <file category="header" name="drivers/fsl_trng.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="sdhc" Cversion="2.5.0" condition="device.MIMXRT685S_AND_driver.common">
+      <description>USDHC Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_usdhc.c"/>
+        <file category="header" name="drivers/fsl_usdhc.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="utick" Cversion="2.0.3" condition="device.MIMXRT685S_AND_driver.common_AND_driver.power">
+      <description>UTICK Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_utick.c"/>
+        <file category="header" name="drivers/fsl_utick.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="wm8904" Cversion="2.4.0" condition="device.MIMXRT685S_AND_component.codec_i2c_AND_driver.common">
+      <description/>
+      <files>
+        <file category="sourceC" name="components/codec/wm8904/fsl_wm8904.c"/>
+        <file category="header" name="components/codec/wm8904/fsl_wm8904.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="wwdt" Cversion="2.1.4" condition="device.MIMXRT685S_AND_driver.common">
+      <description>WWDT Driver</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_wwdt.c"/>
+        <file category="header" name="drivers/fsl_wwdt.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="assert" Cversion="1.0.0" condition="device.MIMXRT685S_AND_utility.debug_console">
+      <description/>
+      <files>
+        <file category="sourceC" name="utilities/fsl_assert.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="debug_console" Cversion="1.0.0" condition="device.MIMXRT685S_AND_component.serial_manager_AND_driver.common">
+      <description/>
+      <files>
+        <file category="sourceC" name="utilities/debug_console/fsl_debug_console.c"/>
+        <file category="header" name="utilities/debug_console/fsl_debug_console.h"/>
+        <file category="header" name="utilities/debug_console/fsl_debug_console_conf.h"/>
+        <file category="sourceC" name="utilities/str/fsl_str.c"/>
+        <file category="header" name="utilities/str/fsl_str.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="debug_console_lite" Cversion="1.0.0" condition="device.MIMXRT685S_AND_driver.common">
+      <description/>
+      <files>
+        <file category="sourceC" name="utilities/debug_console_lite/fsl_debug_console.c"/>
+        <file category="header" name="utilities/debug_console_lite/fsl_debug_console.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="shell" Cversion="1.0.0" condition="device.MIMXRT685S_AND_component.lists_AND_driver.common_AND_utility.debug_console">
+      <description/>
+      <RTE_Components_h>
+#define DEBUG_CONSOLE_RX_ENABLE 0
+</RTE_Components_h>
+      <files>
+        <file category="sourceC" name="utilities/fsl_shell.c"/>
+        <file category="header" name="utilities/fsl_shell.h"/>
+      </files>
+    </component>
+  </components>
+</package>

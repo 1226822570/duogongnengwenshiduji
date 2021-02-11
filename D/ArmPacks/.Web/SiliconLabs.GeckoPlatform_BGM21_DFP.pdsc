@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package schemaVersion="1.2" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="PACK.xsd">
+  <vendor>SiliconLabs</vendor>
+  <url>https://www.silabs.com/documents/public/cmsis-packs/</url>
+  <name>GeckoPlatform_BGM21_DFP</name>
+  <description>Silicon Labs BGM21 Blue Gecko Series Device Support.</description>
+
+  <releases>
+    <release version="2.7.3" date="2020-03-23">
+      The PRORTC timer peripheral has been added to EFR32xG13 and EFR32xG14 device families.
+    </release>
+    <release version="2.7.0" date="2019-11-12">
+      Changed pack names and version number sequence.
+    </release>
+  </releases>
+
+  <keywords>
+    <!-- keywords for indexing -->
+    <keyword>Silicon Labs</keyword>
+    <keyword>Device Support</keyword>
+    <keyword>Device Family Package Silicon Labs</keyword>
+    <keyword>BGM21</keyword>
+    <keyword>BGM21</keyword>
+    <keyword>Blue Gecko</keyword>
+    <keyword>Gecko</keyword>
+  </keywords>
+
+  <devices>
+    <family Dfamily="BGM21 Series" Dvendor="Silicon Labs:21">
+      <processor Dcore="Cortex-M33" DcoreVersion="r0p3" Dfpu="1" Dmpu="1" Dendian="Little-endian"/>
+      <processor Dclock="38400000"/>
+      <book name="Documents/efr32xg21-rm.pdf"  title="BGM21 Reference Manual"/>
+      <description>
+32-bit ARM Cortex-M33 core with 80 MHz maximum operating frequency.
+      </description>
+
+      <subFamily DsubFamily="BGM210L">
+        <book         name="Documents/bgm210l-datasheet.pdf"      title="BGM210L Data Sheet"/>
+        <book         name="Documents/bgm210l-errata.pdf"         title="BGM210L Errata"/>
+        <!-- *************************  Device 'BGM210LA22JIF'  ***************************** -->
+        <device Dname="BGM210LA22JIF">
+          <compile header="Device/SiliconLabs/BGM21/Include/em_device.h"  define="BGM210LA22JIF"/>
+          <debug      svd="SVD/BGM21/BGM210LA22JIF.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00100000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00018000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00100000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00100000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'BGM210LA22JNF'  ***************************** -->
+        <device Dname="BGM210LA22JNF">
+          <compile header="Device/SiliconLabs/BGM21/Include/em_device.h"  define="BGM210LA22JNF"/>
+          <debug      svd="SVD/BGM21/BGM210LA22JNF.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00100000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00018000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00100000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00100000"  default="0"  style="IAR"/>
+        </device>
+
+      </subFamily>
+
+      <subFamily DsubFamily="BGM210P">
+        <book         name="Documents/bgm210p-datasheet.pdf"      title="BGM210P Data Sheet"/>
+        <book         name="Documents/bgm210p-errata.pdf"         title="BGM210P Errata"/>
+        <!-- *************************  Device 'BGM210P022JIA'  ***************************** -->
+        <device Dname="BGM210P022JIA">
+          <compile header="Device/SiliconLabs/BGM21/Include/em_device.h"  define="BGM210P022JIA"/>
+          <debug      svd="SVD/BGM21/BGM210P022JIA.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00100000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00018000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00100000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00100000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'BGM210P022JNA'  ***************************** -->
+        <device Dname="BGM210P022JNA">
+          <compile header="Device/SiliconLabs/BGM21/Include/em_device.h"  define="BGM210P022JNA"/>
+          <debug      svd="SVD/BGM21/BGM210P022JNA.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00100000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00018000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00100000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00100000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'BGM210P032JIA'  ***************************** -->
+        <device Dname="BGM210P032JIA">
+          <compile header="Device/SiliconLabs/BGM21/Include/em_device.h"  define="BGM210P032JIA"/>
+          <debug      svd="SVD/BGM21/BGM210P032JIA.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00100000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00018000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00100000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00100000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'BGM210P032JNA'  ***************************** -->
+        <device Dname="BGM210P032JNA">
+          <compile header="Device/SiliconLabs/BGM21/Include/em_device.h"  define="BGM210P032JNA"/>
+          <debug      svd="SVD/BGM21/BGM210P032JNA.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00100000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00018000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00100000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00100000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'BGM210PA22JIA'  ***************************** -->
+        <device Dname="BGM210PA22JIA">
+          <compile header="Device/SiliconLabs/BGM21/Include/em_device.h"  define="BGM210PA22JIA"/>
+          <debug      svd="SVD/BGM21/BGM210PA22JIA.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00100000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00018000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00100000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00100000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'BGM210PA22JNA'  ***************************** -->
+        <device Dname="BGM210PA22JNA">
+          <compile header="Device/SiliconLabs/BGM21/Include/em_device.h"  define="BGM210PA22JNA"/>
+          <debug      svd="SVD/BGM21/BGM210PA22JNA.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00100000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00018000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00100000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00100000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'BGM210PA32JIA'  ***************************** -->
+        <device Dname="BGM210PA32JIA">
+          <compile header="Device/SiliconLabs/BGM21/Include/em_device.h"  define="BGM210PA32JIA"/>
+          <debug      svd="SVD/BGM21/BGM210PA32JIA.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00100000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00018000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00100000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00100000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'BGM210PA32JNA'  ***************************** -->
+        <device Dname="BGM210PA32JNA">
+          <compile header="Device/SiliconLabs/BGM21/Include/em_device.h"  define="BGM210PA32JNA"/>
+          <debug      svd="SVD/BGM21/BGM210PA32JNA.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00100000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00018000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00100000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00100000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'BGM210PB22JIA'  ***************************** -->
+        <device Dname="BGM210PB22JIA">
+          <compile header="Device/SiliconLabs/BGM21/Include/em_device.h"  define="BGM210PB22JIA"/>
+          <debug      svd="SVD/BGM21/BGM210PB22JIA.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00100000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00018000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00100000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00100000"  default="0"  style="IAR"/>
+        </device>
+
+        <!-- *************************  Device 'BGM210PB32JIA'  ***************************** -->
+        <device Dname="BGM210PB32JIA">
+          <compile header="Device/SiliconLabs/BGM21/Include/em_device.h"  define="BGM210PB32JIA"/>
+          <debug      svd="SVD/BGM21/BGM210PB32JIA.svd"/>
+          <memory     id="IROM1"                start="0x00000000"  size="0x00100000"  startup="1"   default="1"/>
+          <memory     id="IRAM1"                start="0x20000000"  size="0x00018000"  init   ="0"   default="1"/>
+          <algorithm  name="Flash/GECKOS2.FLM"  start="0x00000000"  size="0x00100000"  RAMstart="0x20000000" RAMsize="0x4000" default="1" style="Keil"/>
+          <algorithm  name="Flash/FlashGECKOS2.flash"  start="0x00000000"  size="0x00100000"  default="0"  style="IAR"/>
+        </device>
+
+      </subFamily>
+
+    </family>
+  </devices>
+
+  <conditions>
+    <!-- Compiler Conditions -->
+    <condition id="Compiler GCC">
+      <require Tcompiler="GCC"/>
+    </condition>
+
+    <!-- Device Conditions -->
+    <condition id="BGM21">
+      <description>Silicon Labs BGM21 device series</description>
+      <require Dvendor="Silicon Labs:21" Dname="BGM21*"/>
+      <require Cclass="CMSIS" Cgroup="CORE"/>
+    </condition>
+  </conditions>
+
+  <components>
+    <component Cclass="Device" Cgroup="Startup" Cversion="2.7.3" condition="BGM21">
+      <description>System Startup for Silicon Labs BGM21 device series</description>
+      <files>
+        <!-- include folder -->
+        <file category="include" name="Device/SiliconLabs/BGM21/Include/"/>
+        <file category="header"  name="Device/SiliconLabs/BGM21/Include/em_device.h"/>
+        <!-- startup files -->
+        <file category="source"  name="Device/SiliconLabs/BGM21/Source/GCC/startup_bgm21.S" condition="Compiler GCC"   attr="config" version="2.7.3"/>
+        <!-- linker command file -->
+        <file category="linkerScript"  name="Device/SiliconLabs/BGM21/Source/GCC/bgm21.ld" condition="Compiler GCC" attr="config" version="2.7.3"/>
+        <!-- system file -->
+        <file category="source"  name="Device/SiliconLabs/BGM21/Source/system_bgm21.c" attr="config" version="2.7.3"/>
+      </files>
+    </component>
+  </components>
+</package>

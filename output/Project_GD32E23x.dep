@@ -1,0 +1,636 @@
+Dependencies for Project 'Project', Target 'GD32E23x': (DO NOT MODIFY !)
+CompilerVersion: 6140000::V6.14::ARMCLANG
+F (..\main.c)(0x6024AA8B)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/main.o -MD)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+I (..\systick.h)(0x5FD34006)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdio.h)(0x5DDFFD72)
+I (..\main.h)(0x5FD34007)
+I (inc\wifi.h)(0x601A837C)
+I (D:\Keil_v5\ARM\ARMCLANG\include\string.h)(0x5DDFFD6C)
+I (inc\protocol.h)(0x601AA4C2)
+I (inc\system.h)(0x601A837C)
+I (inc\mcu_api.h)(0x601A837C)
+F (..\gd32e23x_it.c)(0x6024B273)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_it.o -MD)
+I (..\gd32e23x_it.h)(0x5FD34007)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+I (..\main.h)(0x5FD34007)
+I (..\systick.h)(0x5FD34006)
+F (..\systick.c)(0x6024A2AE)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/systick.o -MD)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+I (..\systick.h)(0x5FD34006)
+F (.\src\uart.c)(0x601FD557)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/uart.o -MD)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdio.h)(0x5DDFFD72)
+F (.\src\mcu_api.c)(0x601A8549)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/mcu_api.o -MD)
+I (inc\wifi.h)(0x601A837C)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdio.h)(0x5DDFFD72)
+I (D:\Keil_v5\ARM\ARMCLANG\include\string.h)(0x5DDFFD6C)
+I (inc\protocol.h)(0x601AA4C2)
+I (inc\system.h)(0x601A837C)
+I (inc\mcu_api.h)(0x601A837C)
+F (.\src\protocol.c)(0x6024AA8B)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/protocol.o -MD)
+I (inc\wifi.h)(0x601A837C)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdio.h)(0x5DDFFD72)
+I (D:\Keil_v5\ARM\ARMCLANG\include\string.h)(0x5DDFFD6C)
+I (inc\protocol.h)(0x601AA4C2)
+I (inc\system.h)(0x601A837C)
+I (inc\mcu_api.h)(0x601A837C)
+F (.\src\system.c)(0x601A837C)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/system.o -MD)
+I (inc\wifi.h)(0x601A837C)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdio.h)(0x5DDFFD72)
+I (D:\Keil_v5\ARM\ARMCLANG\include\string.h)(0x5DDFFD6C)
+I (inc\protocol.h)(0x601AA4C2)
+I (inc\system.h)(0x601A837C)
+I (inc\mcu_api.h)(0x601A837C)
+F (.\src\rc5_decode.c)(0x601BD44A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/rc5_decode.o -MD)
+I (inc\rc5_decode.h)(0x5FD3400C)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+I (inc\ir_decode.h)(0x601BC72D)
+F (.\src\rc5_encode.c)(0x5FD3400C)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/rc5_encode.o -MD)
+I (inc\rc5_encode.h)(0x5FD3400C)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+I (inc\ir_decode.h)(0x601BC72D)
+F (.\src\oc.c)(0x6024A447)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/oc.o -MD)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdio.h)(0x5DDFFD72)
+I (inc\systick.h)(0x601D1811)
+F (.\src\SHT30.c)(0x601E9295)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/sht30.o -MD)
+I (inc\SHT30.h)(0x601E9165)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+I (inc\systick.h)(0x601D1811)
+I (inc\myiic.h)(0x601E93CC)
+F (.\src\myiic.c)(0x601E91F9)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/myiic.o -MD)
+I (inc\myiic.h)(0x601E93CC)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (.\src\oled.c)(0x6024B450)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/oled.o -MD)
+I (inc\oled.h)(0x601FCD47)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdlib.h)(0x5DDFFD6A)
+I (inc\oledfont.h)(0x6024E9C8)
+I (inc\systick.h)(0x601D1811)
+F (.\src\irsend.c)(0x601FD2E4)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/irsend.o -MD)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\CMSIS\GD\GD32E23x\Source\system_gd32e23x.c)(0x601932A1)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/system_gd32e23x.o -MD)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_adc.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_adc.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_adc.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_cmp.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_cmp.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_cmp.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_crc.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_crc.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_crc.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_dbg.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_dbg.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_dbg.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_dma.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_dma.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_dma.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_exti.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_exti.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_fmc.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_fmc.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_fwdgt.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_fwdgt.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fwdgt.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_gpio.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_gpio.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_i2c.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_i2c.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_i2c.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_misc.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_misc.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_pmu.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_pmu.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_pmu.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_rcu.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_rcu.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_rtc.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_rtc.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rtc.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_spi.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_spi.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_spi.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_syscfg.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_syscfg.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_syscfg.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_timer.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_timer.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_usart.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_usart.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\GD32E23x_standard_peripheral\Source\gd32e23x_wwdgt.c)(0x5FD34008)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m23 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-3 -O0 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -I ./GD32E23x_standard_peripheral/Include -I ./CMSIS/GD/GD32E23x/Include -I ./inc-I./RTE/_GD32E23x-ID:/Keil_v5/D/ArmPacks/ARM/CMSIS/5.7.0/CMSIS/Core/Include-ID:/Keil_v5/D/ArmPacks/GigaDevice/GD32E23x_DFP/1.0.0/Device/Include-D__UVISION_VERSION="530" -D_RTE_ -DGD32E23x -D_RTE_ -DGD32E230-o ./output/gd32e23x_wwdgt.o -MD)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_wwdgt.h)(0x5FD34008)
+I (CMSIS\GD\GD32E23x\Include\gd32e23x.h)(0x5FD34009)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\core_cm23.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\stdint.h)(0x5DDFFD72)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_version.h)(0x5E8ED122)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5E8306C2)
+I (D:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include\cmsis_armclang.h)(0x5E8ED122)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_compat.h)(0x5E0CC2EC)
+I (D:\Keil_v5\ARM\ARMCLANG\include\arm_acle.h)(0x5E0CC318)
+I (CMSIS\GD\GD32E23x\Include\system_gd32e23x.h)(0x5FD34009)
+I (inc\gd32e23x_libopt.h)(0x601FD412)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_exti.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_fmc.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_gpio.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_rcu.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_timer.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_usart.h)(0x5FD34008)
+I (GD32E23x_standard_peripheral\Include\gd32e23x_misc.h)(0x5FD34008)
+F (..\..\Firmware\CMSIS\GD\GD32E23x\Source\ARM\startup_gd32e23x.s)(0x5FD34008)(--cpu=Cortex-M23 -g --pd "__MICROLIB SETA 1"-I.\RTE\_GD32E23x-ID:\Keil_v5\D\ArmPacks\ARM\CMSIS\5.7.0\CMSIS\Core\Include-ID:\Keil_v5\D\ArmPacks\GigaDevice\GD32E23x_DFP\1.0.0\Device\Include--pd "__UVISION_VERSION SETA 530"--pd "_RTE_ SETA 1"--pd "GD32E23x SETA 1"--pd "_RTE_ SETA 1"--list .\list\startup_gd32e23x.lst--xref -o .\output\startup_gd32e23x.o--depend .\output\startup_gd32e23x.d)
+F (..\readme.txt)(0x5FD34007)()
+F (.\inc\main.h)(0x601943E6)()
+F (.\inc\mcu_api.h)(0x601A837C)()
+F (.\inc\protocol.h)(0x601AA4C2)()
+F (.\inc\system.h)(0x601A837C)()
+F (.\inc\systick.h)(0x601D1811)()
+F (.\inc\wifi.h)(0x601A837C)()
+F (.\inc\gd32e23x_libopt.h)(0x601FD412)()
+F (.\inc\ir_decode.h)(0x601BC72D)()
+F (.\inc\rc5_decode.h)(0x5FD3400C)()
+F (.\inc\rc5_encode.h)(0x5FD3400C)()
+F (.\inc\SHT30.h)(0x601E9165)()
+F (.\inc\myiic.h)(0x601E93CC)()
+F (.\inc\oled.h)(0x601FCD47)()
+F (.\inc\oledfont.h)(0x6024E9C8)()

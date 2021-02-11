@@ -1,0 +1,2246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<package schemaVersion="1.6.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="PACK.xsd">
+  <vendor>Keil</vendor>
+  <name>STM32L5xx_DFP</name>
+  <description>STMicroelectronics STM32L5 Series Device Support</description>
+  <url>http://www.keil.com/pack/</url>
+
+  <releases>
+    <release version="1.1.0" date="2020-01-07">
+      Initial public version of the STM32L5 device family support pack for the:
+      STM32L552 and STM32L562 device series.
+      Based on STM32Cube L5 Firmware Pack version 1.0.0.
+      use with MDK 5.29 recommended.
+    </release>
+  </releases>
+
+  <keywords>
+    <keyword>ST</keyword>
+    <keyword>Device Support</keyword>
+    <keyword>Device Family Package STMicroelectronics</keyword>
+    <keyword>STM32L5</keyword>
+    <keyword>STM32L5xx</keyword>
+  </keywords>
+
+  <devices>
+    <family Dfamily="STM32L5 Series" Dvendor="STMicroelectronics:13">
+      <processor Dcore="Cortex-M33" DcoreVersion="r0p0" Dfpu="SP_FPU" Dmpu="MPU" Ddsp="DSP" Dtz="TZ" Dendian="Little-endian" Dclock="110000000"/>
+      <description>
+     The ARM Cortex-M33 is the most configurable of all Cortex-M processors.
+     It is a full featured microcontroller class processor based on the ARMv8-M mainline architecture with ARM TrustZone security.
+      </description>
+      <book name="Documentation/arm_cortex_m33_dgug_100235_0004_00_en.pdf" title="Cortex-M33 Generic User Guide"/>
+      <book name="Documentation/RM0438_STM32L552_STM32L562.pdf" title="STM32L552xx and STM32L562xx Reference Manual"/>
+      <algorithm name="CMSIS/Flash/MX25L51245G_STM32L5_OSPI.FLM"     start="0x90000000" size="0x04000000" default="0" />
+
+      <debugvars configfile="CMSIS/Debug/STM32L552xx_562xx.dbgconf" version="1.0.0">
+        __var DbgMCU_CR       = 0x00000006;   // DBGMCU_CR: DBG_STOP, DBG_STANDBY
+        __var DbgMCU_APB1L_Fz = 0x00000000;   // DGBMCU_APB1L_FZ: All Peripherals Operate as in Normal Mode
+        __var DbgMCU_APB1H_Fz = 0x00000000;   // DGBMCU_APB1H_FZ: All Peripherals Operate as in Normal Mode
+        __var DbgMCU_APB2_Fz  = 0x00000000;   // DGBMCU_APB2_FZ : All Peripherals Operate as in Normal Mode
+        __var TraceClk_Pin    = 0x00040002;   // PE2
+        __var TraceD0_Pin     = 0x00020009;   // PC9
+        __var TraceD1_Pin     = 0x0002000A;   // PC10
+        __var TraceD2_Pin     = 0x00040005;   // PE5
+        __var TraceD3_Pin     = 0x0002000C;   // PC12
+      </debugvars>
+
+      <sequences>
+        <!-- Override for Pre-Defined Sequences -->
+        <sequence name="DebugDeviceUnlock">
+          <block>
+            __var traceSWO    = (__traceout &amp; 0x1) != 0;                        // SWO enabled?
+            __var traceTPIU   = (__traceout &amp; 0x2) != 0;                        // Synchronous trace port enabled?
+
+            Sequence("CheckID");
+          </block>
+
+          <control if="traceSWO">
+            <block>
+              Sequence("ConfigureTraceSWOClock");
+            </block>
+          </control>
+
+          <control if="traceTPIU">
+            <block>
+              Sequence("ConfigureTraceTPIUClock");
+            </block>
+          </control>
+
+        </sequence>
+
+        <sequence name="DebugCoreStart">
+          <block>
+            // Replication of Standard Functionality
+            Write32(0xE000EDF0, 0xA05F0001);                                        // Enable Core Debug via DHCSR
+
+            // Device Specific Debug Setup
+            Write32(0xE0044004, DbgMCU_CR | (Read32(0xE0044004) &amp; 0xF0));       // DBGMCU_CR: Configure MCU Debug
+            Write32(0xE0044008, DbgMCU_APB1L_Fz);                                   // DBGMCU_APB1_FZ: Configure APB1L Peripheral Freeze Behavior
+            Write32(0xE004400C, DbgMCU_APB1H_Fz);                                   // DBGMCU_APB1_FZ: Configure APB1H Peripheral Freeze Behavior
+            Write32(0xE0044010, DbgMCU_APB2_Fz);                                    // DBGMCU_APB1_FZ: Configure APB2 Peripheral Freeze Behavior
+          </block>
+        </sequence>
+
+        <!-- Override for Pre-Defined TraceStart Sequence -->
+        <sequence name="TraceStart">
+          <block>
+            __var traceSWO    = (__traceout &amp; 0x1) != 0;                        // SWO (asynchronous) Trace Selected?
+            __var traceTPIU   = (__traceout &amp; 0x2) != 0;                        // Synchronous trace port enabled?
+          </block>
+
+          <control if="traceSWO">
+            <block>
+              Sequence("EnableTraceSWO");                                           // Call SWO Trace Setup
+            </block>
+          </control>
+
+          <control if="traceTPIU">
+            <block>
+              Sequence("EnableTraceTPIU");                                          // Call TPIU Trace Setup
+            </block>
+          </control>
+
+        </sequence>
+
+        <sequence name="TraceStop">
+          <block>
+            __var traceSWO    = (__traceout &amp; 0x1) != 0;                        // SWO enabled?
+            __var traceTPIU   = (__traceout &amp; 0x2) != 0;                        // Synchronous trace port enabled?
+          </block>
+
+          <control if="traceSWO">
+            <block>
+              Sequence("DisableTraceSWO");
+            </block>
+          </control>
+
+          <control if="traceTPIU">
+            <block>
+              Sequence("DisableTraceTPIU");
+            </block>
+          </control>
+        </sequence>
+
+        <!-- User-Defined Sequences -->
+        <sequence name="CheckID">
+          <block>
+            __var pidr1 = 0;
+            __var pidr2 = 0;
+            __var jep106id = 0;
+            __var ROMTableBase = 0;
+
+            __ap = 0;      // AHB-AP
+
+            ROMTableBase = ReadAP(0xF8) &amp; ~0x3;
+
+            pidr1 = Read32(ROMTableBase + 0x0FE4);
+            pidr2 = Read32(ROMTableBase + 0x0FE8);
+            jep106id = ((pidr2 &amp; 0x7) &lt;&lt; 4 ) | ((pidr1 &gt;&gt; 4) &amp; 0xF);
+          </block>
+
+          <control if="jep106id != 0x20">
+            <block>
+              Query(0, "Not a genuine ST Device! Abort connection", 1);
+              Message(2, "Not a genuine ST Device! Abort connection.");
+            </block>
+          </control>
+        </sequence>
+
+        <sequence name="EnableTraceSWO">
+          <block>
+            Sequence("ConfigureTraceSWOPin");
+            Sequence("ConfigureTraceSWOClock");
+          </block>
+        </sequence>
+
+        <sequence name="DisableTraceSWO">
+          <block>
+            __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+          </block>
+
+          <block info="unconfigure Trace Port and Clock Enable + Trace I/O Enable + Trace Mode Asynchronous">
+            dbgmcu_val = Read32(0xE0044004) &amp; (~0xF0);                                // Read DBGMCU_CR and clear trace setup
+            Write32(0xE0044004, dbgmcu_val);                                              // Write DBGMCU_CR: Trace Settings
+          </block>
+        </sequence>
+
+        <sequence name="EnableTraceTPIU">
+          <block>
+            Sequence("ConfigureTraceTPIUPins");
+            Sequence("ConfigureTraceTPIUClock");
+          </block>
+        </sequence>
+
+        <sequence name="DisableTraceTPIU">
+          <block>
+            __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+          </block>
+
+          <block info="unconfigure Trace I/O Enable + Trace Mode Synchronous">
+            dbgmcu_val = Read32(0xE0044004) &amp; (~0xF0);                                // Read DBGMCU_CR and clear trace setup
+            Write32(0xE0044004, dbgmcu_val);                                              // Write DBGMCU_CR: Trace Settings
+          </block>
+        </sequence>
+
+        <sequence name="ConfigureTraceSWOClock">
+          <block>
+            __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+            __var dbgmcu_trace_val = 0;                                                   // DBGMCU_CR Value
+
+            dbgmcu_val        = Read32(0xE0044004) &amp; (~0xF0);                         // Read DBGMCU_CR and clear trace setup
+            dbgmcu_trace_val  = (1 &lt;&lt; 5) | (1 &lt;&lt; 4);                          // Trace Port and Clock Enable + Trace I/O Enable + Trace Mode Asynchronous
+          </block>
+
+          <block info="configure Trace I/O Enable + Trace Mode Asynchronous">
+            Write32(0xE0044004, dbgmcu_val | dbgmcu_trace_val);                           // Write DBGMCU_CR: Trace Settings
+          </block>
+        </sequence>
+
+        <sequence name="ConfigureTraceTPIUClock">
+          <block>
+            __var width            = (__traceout &amp; 0x003F0000) &gt;&gt; 16;
+            __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+            __var dbgmcu_trace_val = 0;                                                   // DBGMCU_CR Value
+
+            dbgmcu_val = Read32(0xE0044004) &amp; (~0xF0);                                // Read DBGMCU_CR and clear trace setup
+          </block>
+
+          <control if="width &gt;= 1" info="TPIU port width 1">
+            <block info="configure Trace Port and Clock Enable + Trace I/O Enable + Trace Mode Synchronous 1 bit">
+              dbgmcu_trace_val  = (3 &lt;&lt; 5) | (1 &lt;&lt; 4);
+            </block>
+          </control>
+
+          <control if="width &gt;= 2" info="TPIU port width 2">
+            <block info="configure Trace Port and Clock Enable + Trace I/O Enable + Trace Mode Synchronous 2 bit">
+              dbgmcu_trace_val  = (5 &lt;&lt; 5) | (1 &lt;&lt; 4);
+            </block>
+          </control>
+
+          <control if="width &gt;= 4" info="TPIU port width 4">
+            <block info="configure Trace Port and Clock Enable + Trace I/O Enable + Trace Mode Synchronous 4 bit">
+              dbgmcu_trace_val  = (7 &lt;&lt; 5) | (1 &lt;&lt; 4);
+            </block>
+          </control>
+
+          <block info="configure Trace I/O Enable + Trace Mode Asynchronous">
+            Write32(0xE0044004, dbgmcu_val | dbgmcu_trace_val);                           // Write DBGMCU_CR: Trace Settings
+          </block>
+        </sequence>
+
+        <sequence name="ConfigureTraceSWOPin">
+          <block>
+            __var pin     = 0;
+            __var port    = 0;
+            __var portAdr = 0;
+            __var pos     = 0;
+            __var secOffs = 0x00000000;
+
+            __var SWO_Pin = 0x00010003;          // PB3
+          </block>
+
+          <control if="(Read32(0xE000EFB8) &amp; 0x000000F0) == 0x000000F0" info="Secure debug enabled?">
+            <block>
+              secOffs = 0x10000000;
+            </block>
+          </control>
+
+          <!-- configure SWO -->
+          <block info="configure SWO">
+            pin     =               ((SWO_Pin            ) &amp; 0x0000FFFF);
+            port    =               ((SWO_Pin &gt;&gt; 16) &amp; 0x0000FFFF);
+            portAdr = 0x42020000 + secOffs + (((SWO_Pin &gt;&gt; 16) &amp; 0x0000FFFF) * 0x400);
+
+            pos = pin * 2;
+            Write32(0x4002104C + secOffs, ((Read32(0x4002104C + secOffs)             ) | (1 &lt;&lt; port)) );  // RCC_AHB2ENR:   IO port clock enable
+
+            Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) &amp; ~( 3 &lt;&lt; pos)) | (2 &lt;&lt; pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+            Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 &lt;&lt; pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+            Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) &amp; ~( 3 &lt;&lt; pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+          </block>
+          <control if="pin &lt;  8">
+            <block>
+            pos = ((pin    ) &amp; 7) * 4;
+            Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) &amp; ~(15 &lt;&lt; pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+            </block>
+          </control>
+          <control if="pin &gt;= 8">
+            <block>
+            pos = ((pin - 8) &amp; 7) * 4;
+            Write32(portAdr + 0x24, ((Read32(portAdr + 0x24) &amp; ~(15 &lt;&lt; pos))                    ) );  // GPIOx_AFRH:    Alternate Function to AF0
+            </block>
+          </control>
+        </sequence>
+
+        <sequence name="ConfigureTraceTPIUPins">
+          <block>
+            __var pin     = 8;
+            __var port    = 0;
+            __var portAdr = 0;
+            __var pos     = 0;
+            __var secOffs = 0x00000000;
+
+            __var width   = (__traceout &amp; 0x003F0000) &gt;&gt; 16;
+          </block>
+
+          <control if="(Read32(0xE000EFB8) &amp; 0x000000F0) == 0x000000F0" info="Secure debug enabled?">
+            <block>
+              secOffs = 0x10000000;
+            </block>
+          </control>
+
+            <!-- configure TRACECLK -->
+            <block info="configure TRACECLK">
+              pin     =                (TraceClk_Pin            ) &amp; 0x0000FFFF;
+              port    =                (TraceClk_Pin &gt;&gt; 16) &amp; 0x0000FFFF;
+              portAdr = 0x42020000 + secOffs + (((TraceClk_Pin &gt;&gt; 16) &amp; 0x0000FFFF) * 0x400);
+
+              pos = pin * 2;
+              Write32(0x4002104C + secOffs, ((Read32(0x4002104C + secOffs)             ) | (1 &lt;&lt; port)) );  // RCC_AHB2ENR:   IO port clock enable
+              Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) &amp; ~( 3 &lt;&lt; pos)) | (2 &lt;&lt; pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+              Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 &lt;&lt; pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+              Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) &amp; ~( 3 &lt;&lt; pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+            </block>
+            <control if="pin &lt;  8">
+              <block>
+              pos = ((pin    ) &amp; 7) * 4;
+              Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) &amp; ~(15 &lt;&lt; pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+              </block>
+            </control>
+            <control if="pin &gt;= 8">
+              <block>
+              pos = ((pin - 8) &amp; 7) * 4;
+              Write32(portAdr + 0x24, ((Read32(portAdr + 0x24) &amp; ~(15 &lt;&lt; pos))                    ) );  // GPIOx_AFRH:    Alternate Function to AF0
+              </block>
+            </control>
+
+          <control if="width &gt;= 1" info="TPIU port width 1">
+            <!-- configure TRACED0 -->
+            <block info="configure TRACED0">
+              pin     =                (TraceD0_Pin            ) &amp; 0x0000FFFF;
+              port    =                (TraceD0_Pin &gt;&gt; 16) &amp; 0x0000FFFF;
+              portAdr = 0x42020000 + secOffs + (((TraceD0_Pin &gt;&gt; 16) &amp; 0x0000FFFF) * 0x400);
+
+              pos = pin * 2;
+              Write32(0x4002104C + secOffs, ((Read32(0x4002104C + secOffs)             ) | (1 &lt;&lt; port)) );  // RCC_AHB2ENR:   IO port clock enable
+              Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) &amp; ~( 3 &lt;&lt; pos)) | (2 &lt;&lt; pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+              Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 &lt;&lt; pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+              Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) &amp; ~( 3 &lt;&lt; pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+            </block>
+            <control if="pin &lt;  8">
+              <block>
+              pos = ((pin    ) &amp; 7) * 4;
+              Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) &amp; ~(15 &lt;&lt; pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+              </block>
+            </control>
+            <control if="pin &gt;= 8">
+              <block>
+              pos = ((pin - 8) &amp; 7) * 4;
+              Write32(portAdr + 0x24, ((Read32(portAdr + 0x24) &amp; ~(15 &lt;&lt; pos))                    ) );  // GPIOx_AFRH:    Alternate Function to AF0
+              </block>
+            </control>
+          </control>
+
+          <control if="width &gt;= 2" info="TPIU port width 2">
+            <!-- configure TRACED1 -->
+            <block info="configure TRACED1">
+              pin     =                (TraceD1_Pin            ) &amp; 0x0000FFFF;
+              port    =                (TraceD1_Pin &gt;&gt; 16) &amp; 0x0000FFFF;
+              portAdr = 0x42020000 + secOffs + (((TraceD1_Pin &gt;&gt; 16) &amp; 0x0000FFFF) * 0x400);
+
+              pos = pin * 2;
+              Write32(0x4002104C + secOffs, ((Read32(0x4002104C + secOffs)             ) | (1 &lt;&lt; port)) );  // RCC_AHB2ENR:   IO port clock enable
+              Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) &amp; ~( 3 &lt;&lt; pos)) | (2 &lt;&lt; pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+              Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 &lt;&lt; pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+              Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) &amp; ~( 3 &lt;&lt; pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+            </block>
+            <control if="pin &lt;  8">
+              <block>
+              pos = ((pin    ) &amp; 7) * 4;
+              Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) &amp; ~(15 &lt;&lt; pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+              </block>
+            </control>
+            <control if="pin &gt;= 8">
+              <block>
+              pos = ((pin - 8) &amp; 7) * 4;
+              Write32(portAdr + 0x24, ((Read32(portAdr + 0x24) &amp; ~(15 &lt;&lt; pos))                    ) );  // GPIOx_AFRH:    Alternate Function to AF0
+              </block>
+            </control>
+          </control>
+
+          <control if="width &gt;= 4" info="TPIU port width 4">
+            <!-- configure TRACED2 -->
+            <block info="configure TRACED2">
+              pin     =                (TraceD2_Pin            ) &amp; 0x0000FFFF;
+              port    =                (TraceD2_Pin &gt;&gt; 16) &amp; 0x0000FFFF;
+              portAdr = 0x42020000 + secOffs + (((TraceD2_Pin &gt;&gt; 16) &amp; 0x0000FFFF) * 0x400);
+
+              pos = pin * 2;
+              Write32(0x4002104C + secOffs, ((Read32(0x4002104C + secOffs)             ) | (1 &lt;&lt; port)) );  // RCC_AHB2ENR:   IO port clock enable
+              Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) &amp; ~( 3 &lt;&lt; pos)) | (2 &lt;&lt; pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+              Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 &lt;&lt; pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+              Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) &amp; ~( 3 &lt;&lt; pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+            </block>
+            <control if="pin &lt;  8">
+              <block>
+              pos = ((pin    ) &amp; 7) * 4;
+              Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) &amp; ~(15 &lt;&lt; pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+              </block>
+            </control>
+            <control if="pin &gt;= 8">
+              <block>
+              pos = ((pin - 8) &amp; 7) * 4;
+              Write32(portAdr + 0x24, ((Read32(portAdr + 0x24) &amp; ~(15 &lt;&lt; pos))                    ) );  // GPIOx_AFRH:    Alternate Function to AF0
+              </block>
+            </control>
+
+            <!-- configure TRACED3 -->
+            <block info="configure TRACED3">
+              pin     =                (TraceD3_Pin            ) &amp; 0x0000FFFF;
+              port    =                (TraceD3_Pin &gt;&gt; 16) &amp; 0x0000FFFF;
+              portAdr = 0x42020000 + secOffs + (((TraceD3_Pin &gt;&gt; 16) &amp; 0x0000FFFF) * 0x400);
+
+              pos = pin * 2;
+              Write32(0x4002104C + secOffs, ((Read32(0x4002104C + secOffs)             ) | (1 &lt;&lt; port)) );  // RCC_AHB2ENR:   IO port clock enable
+              Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) &amp; ~( 3 &lt;&lt; pos)) | (2 &lt;&lt; pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+              Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 &lt;&lt; pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+              Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) &amp; ~( 3 &lt;&lt; pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+            </block>
+            <control if="pin &lt;  8">
+              <block>
+              pos = ((pin    ) &amp; 7) * 4;
+              Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) &amp; ~(15 &lt;&lt; pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+              </block>
+            </control>
+            <control if="pin &gt;= 8">
+              <block>
+              pos = ((pin - 8) &amp; 7) * 4;
+              Write32(portAdr + 0x24, ((Read32(portAdr + 0x24) &amp; ~(15 &lt;&lt; pos))                    ) );  // GPIOx_AFRH:    Alternate Function to AF0
+              </block>
+            </control>
+          </control>
+        </sequence>
+
+      </sequences>
+
+      <!-- ************************  Subfamily 'STM32L5x2'  **************************** -->
+      <subFamily DsubFamily="STM32L5x2">       
+
+        <book name="Documentation/RM0438_STM32L552_STM32L562.pdf" title="STM32L552xx and STM32L562xx Reference Manual"/>
+
+        <algorithm name="CMSIS/Flash/STM32L5x_512_0C00.FLM"          start="0x0C000000" size="0x00080000" default="1" />
+        <algorithm name="CMSIS/Flash/STM32L5x_512_0800.FLM"          start="0x08000000" size="0x00080000" default="1" />
+
+        <!-- *************************  Device 'STM32L552CCTx'  ***************************** -->
+        <device Dname="STM32L552CCTx">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00040000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00040000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="48"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552CETx'  ***************************** -->
+        <device Dname="STM32L552CETx">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="48"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552CCUx'  ***************************** -->
+        <device Dname="STM32L552CCUx">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00040000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00040000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="48"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552CEUx'  ***************************** -->
+        <device Dname="STM32L552CEUx">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="48"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552CETxP'  **************************** -->
+        <device Dname="STM32L552CETxP">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="48"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552CEUxP'  **************************** -->
+        <device Dname="STM32L552CEUxP">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="48"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552MEYxP'  **************************** -->
+        <device Dname="STM32L552MEYxP">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="CSP" n="81"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552MEYxQ'  **************************** -->
+        <device Dname="STM32L552MEYxQ">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="CSP" n="81"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552QCIxQ'  **************************** -->
+        <device Dname="STM32L552QCIxQ">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00040000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00040000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="BGA" n="132"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552QEIxQ'  **************************** -->
+        <device Dname="STM32L552QEIxQ">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="BGA" n="132"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552QEIx'  ***************************** -->
+        <device Dname="STM32L552QEIx">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="BGA" n="132"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552QEIxP'  **************************** -->
+        <device Dname="STM32L552QEIxP">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="BGA" n="132"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552RCTx'  ***************************** -->
+        <device Dname="STM32L552RCTx">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00040000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00040000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="64"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552RETx'  ***************************** -->
+        <device Dname="STM32L552RETx">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="64"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552RETxP'  **************************** -->
+        <device Dname="STM32L552RETxP">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="64"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552RETxQ'  **************************** -->
+        <device Dname="STM32L552RETxQ">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="64"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552VCTxQ'  **************************** -->
+        <device Dname="STM32L552VCTxQ">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00040000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00040000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="100"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552VETxQ'  **************************** -->
+        <device Dname="STM32L552VETxQ">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="100"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552VETx'  ***************************** -->
+        <device Dname="STM32L552VETx">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="100"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552ZCTxQ'  **************************** -->
+        <device Dname="STM32L552ZCTxQ">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00040000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00040000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="144"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552ZETxQ'  **************************** -->
+        <device Dname="STM32L552ZETxQ">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="144"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L552ZETx'  ***************************** -->
+        <device Dname="STM32L552ZETx">
+		  <debug svd="CMSIS/SVD/STM32L552.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L552xx"/>
+
+          <book name="Documentation/DB3609_STM32L552.pdf"          title="STM32L552xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="144"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L562CETx'  ***************************** -->
+        <device Dname="STM32L562CETx">
+		  <debug svd="CMSIS/SVD/STM32L562.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L562xx"/>
+
+          <book name="Documentation/DB3492_STM32L562.pdf"          title="STM32L562xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="48"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L562CETxP'  **************************** -->
+        <device Dname="STM32L562CETxP">
+		  <debug svd="CMSIS/SVD/STM32L562.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L562xx"/>
+
+          <book name="Documentation/DB3492_STM32L562.pdf"          title="STM32L562xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="48"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L562CEUx'  ***************************** -->
+        <device Dname="STM32L562CEUx">
+		  <debug svd="CMSIS/SVD/STM32L562.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L562xx"/>
+
+          <book name="Documentation/DB3492_STM32L562.pdf"          title="STM32L562xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="48"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L562CEUxP'  **************************** -->
+        <device Dname="STM32L562CEUxP">
+		  <debug svd="CMSIS/SVD/STM32L562.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L562xx"/>
+
+          <book name="Documentation/DB3492_STM32L562.pdf"          title="STM32L562xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="48"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L562MEYxP'  **************************** -->
+        <device Dname="STM32L562MEYxP">
+		  <debug svd="CMSIS/SVD/STM32L562.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L562xx"/>
+
+          <book name="Documentation/DB3492_STM32L562.pdf"          title="STM32L562xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="CSP" n="81"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L562MEYxQ'  **************************** -->
+        <device Dname="STM32L562MEYxQ">
+		  <debug svd="CMSIS/SVD/STM32L562.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L562xx"/>
+
+          <book name="Documentation/DB3492_STM32L562.pdf"          title="STM32L562xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="CSP" n="81"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L562QEIxP'  **************************** -->
+        <device Dname="STM32L562QEIxP">
+		  <debug svd="CMSIS/SVD/STM32L562.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L562xx"/>
+
+          <book name="Documentation/DB3492_STM32L562.pdf"          title="STM32L562xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="BGA" n="132"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L562QEIxQ'  **************************** -->
+        <device Dname="STM32L562QEIxQ">
+		  <debug svd="CMSIS/SVD/STM32L562.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L562xx"/>
+
+          <book name="Documentation/DB3492_STM32L562.pdf"          title="STM32L562xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="BGA" n="132"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L562RETx'  ***************************** -->
+        <device Dname="STM32L562RETx">
+		  <debug svd="CMSIS/SVD/STM32L562.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L562xx"/>
+
+          <book name="Documentation/DB3492_STM32L562.pdf"          title="STM32L562xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="64"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L562RETxP'  **************************** -->
+        <device Dname="STM32L562RETxP">
+		  <debug svd="CMSIS/SVD/STM32L562.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L562xx"/>
+
+          <book name="Documentation/DB3492_STM32L562.pdf"          title="STM32L562xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="64"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L562VETx'  ***************************** -->
+        <device Dname="STM32L562VETx">
+		  <debug svd="CMSIS/SVD/STM32L562.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L562xx"/>
+
+          <book name="Documentation/DB3492_STM32L562.pdf"          title="STM32L562xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="100"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L562VETxQ'  **************************** -->
+        <device Dname="STM32L562VETxQ">
+		  <debug svd="CMSIS/SVD/STM32L562.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L562xx"/>
+
+          <book name="Documentation/DB3492_STM32L562.pdf"          title="STM32L562xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="100"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L562ZETx'  ***************************** -->
+        <device Dname="STM32L562ZETx">
+		  <debug svd="CMSIS/SVD/STM32L562.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L562xx"/>
+
+          <book name="Documentation/DB3492_STM32L562.pdf"          title="STM32L562xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="144"/>
+        </device>
+
+        <!-- *************************  Device 'STM32L562ZETxQ'  **************************** -->
+        <device Dname="STM32L562ZETxQ">
+		  <debug svd="CMSIS/SVD/STM32L562.svd"/>
+          <compile header="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h" define="STM32L562xx"/>
+
+          <book name="Documentation/DB3492_STM32L562.pdf"          title="STM32L562xx Data Sheet"/>
+
+          <memory name="Flash-non-secure" access="rx"  id="IROM1" start="0x08000000" size="0x00080000" default="1" startup="1" />
+          <memory name="Flash-secure"     access="rx"  id="IROM2" start="0x0C000000" size="0x00080000" default="0" startup="1" />
+          <memory name="SRAM-non-secure"  access="rwx" id="IRAM1" start="0x20000000" size="0x00040000" default="1" init="0" />
+          <memory name="SRAM-secure"      access="rwx" id="IRAM2" start="0x30000000" size="0x00040000" default="0" init="0" />
+
+          <feature type="QFP" n="144"/>
+        </device>
+
+      </subFamily>
+
+    </family>
+  </devices>
+
+  <conditions>
+    <!-- Compiler Conditions -->
+    <condition id="Compiler ARMCC">
+      <require Tcompiler="ARMCC"/>
+    </condition>
+    <condition id="Compiler GCC">
+      <require Tcompiler="GCC"/>
+    </condition>
+    <condition id="Compiler IAR">
+      <require Tcompiler="IAR"/>
+    </condition>
+
+    <!-- Security Conditions -->
+    <condition id="isSecure">
+      <description>TZ enabled secure app</description>
+      <require Dsecure="Secure"/>
+    </condition>
+    <condition id="isNonSecure">
+      <description>TZ enabled non-secure app </description>
+      <require Dsecure="Non-secure"/>
+    </condition>
+    <condition id="noTZ">
+      <description>Not TZ enabled app</description>
+      <require Dsecure="TZ-disabled"/>
+    </condition>
+
+
+    <!-- Device Conditions -->
+    <condition id="STM32L5">
+      <description>STMicroelectronics STM32L5 Devices</description>
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L5*"/>
+    </condition>
+
+    <condition id="STM32L552">
+      <description>STMicroelectronics STM32L552 Devices</description>
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552*"/>
+    </condition>
+    <condition id="STM32L562">
+      <description>STMicroelectronics STM32L562 Devices</description>
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L562*"/>
+    </condition>
+
+    <condition id="STM32L552_S">
+      <description>STMicroelectronics STM32L552 Devices Secure Model</description>
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552*"/>
+      <require Dsecure="Secure"/>
+    </condition>
+    <condition id="STM32L562_S">
+      <description>STMicroelectronics STM32L562 Devices Secure Model</description>
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L562*"/>
+      <require Dsecure="Secure"/>
+    </condition>
+
+    <!-- Device + CMSIS Conditions -->
+    <condition id="STM32L5 CMSIS">
+      <description>STMicroelectronics STM32L5 Device and CMSIS-CORE</description>
+      <require condition="STM32L5"/>
+      <require Cclass="CMSIS" Cgroup="CORE"/>
+    </condition>
+
+    <!-- Device + Compiler Conditions (ARMCC) -->
+    <condition id="STM32L552 ARMCC" >
+      <description>STMicroelectronics STM32L552 Devices and ARMCC Compiler</description>
+      <require condition="STM32L552"/>
+      <require condition="Compiler ARMCC"/>
+    </condition>
+    <condition id="STM32L562 ARMCC" >
+      <description>STMicroelectronics STM32L562 Devices and ARMCC Compiler</description>
+      <require condition="STM32L562"/>
+      <require condition="Compiler ARMCC"/>
+    </condition>
+
+    <!-- Device + Security + Compiler Conditions (ARMCC) -->
+    <condition id="STM32L552xC noTZ ARMCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?C*"/>
+      <require condition="noTZ"/>
+      <require condition="Compiler ARMCC"/>
+    </condition>
+    <condition id="STM32L552xC isSecure ARMCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?C*"/>
+      <require condition="isSecure"/>
+      <require condition="Compiler ARMCC"/>
+    </condition>
+    <condition id="STM32L552xC isNonSecure ARMCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?C*"/>
+      <require condition="isNonSecure"/>
+      <require condition="Compiler ARMCC"/>
+    </condition>
+    <condition id="STM32L552xE noTZ ARMCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?E*"/>
+      <require condition="noTZ"/>
+      <require condition="Compiler ARMCC"/>
+    </condition>
+    <condition id="STM32L552xE isSecure ARMCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?E*"/>
+      <require condition="isSecure"/>
+      <require condition="Compiler ARMCC"/>
+    </condition>
+    <condition id="STM32L552xE isNonSecure ARMCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?E*"/>
+      <require condition="isNonSecure"/>
+      <require condition="Compiler ARMCC"/>
+    </condition>
+    <condition id="STM32L562xE noTZ ARMCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L562?E*"/>
+      <require condition="noTZ"/>
+      <require condition="Compiler ARMCC"/>
+    </condition>
+    <condition id="STM32L562xE isSecure ARMCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L562?E*"/>
+      <require condition="isSecure"/>
+      <require condition="Compiler ARMCC"/>
+    </condition>
+    <condition id="STM32L562xE isNonSecure ARMCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L562?E*"/>
+      <require condition="isNonSecure"/>
+      <require condition="Compiler ARMCC"/>
+    </condition>
+    
+    <!-- Device + Compiler Conditions (GCC) -->
+    <condition id="STM32L552 GCC" >
+      <description>STMicroelectronics STM32L552 Devices and GCC Compiler</description>
+      <require condition="STM32L552"/>
+      <require condition="Compiler GCC"/>
+    </condition>
+    <condition id="STM32L562 GCC" >
+      <description>STMicroelectronics STM32L562 Devices and GCC Compiler</description>
+      <require condition="STM32L562"/>
+      <require condition="Compiler GCC"/>
+    </condition>
+
+    <!-- Device + Security + Compiler Conditions (GCC) -->
+    <condition id="STM32L552xC noTZ GCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?C*"/>
+      <require condition="noTZ"/>
+      <require condition="Compiler GCC"/>
+    </condition>
+    <condition id="STM32L552xC isSecure GCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?C*"/>
+      <require condition="isSecure"/>
+      <require condition="Compiler GCC"/>
+    </condition>
+    <condition id="STM32L552xC isNonSecure GCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?C*"/>
+      <require condition="isNonSecure"/>
+      <require condition="Compiler GCC"/>
+    </condition>
+    <condition id="STM32L552xE noTZ GCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?E*"/>
+      <require condition="noTZ"/>
+      <require condition="Compiler GCC"/>
+    </condition>
+    <condition id="STM32L552xE isSecure GCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?E*"/>
+      <require condition="isSecure"/>
+      <require condition="Compiler GCC"/>
+    </condition>
+    <condition id="STM32L552xE isNonSecure GCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?E*"/>
+      <require condition="isNonSecure"/>
+      <require condition="Compiler GCC"/>
+    </condition>
+    <condition id="STM32L562xE noTZ GCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L562?E*"/>
+      <require condition="noTZ"/>
+      <require condition="Compiler GCC"/>
+    </condition>
+    <condition id="STM32L562xE isSecure GCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L562?E*"/>
+      <require condition="isSecure"/>
+      <require condition="Compiler GCC"/>
+    </condition>
+    <condition id="STM32L562xE isNonSecure GCC" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L562?E*"/>
+      <require condition="isNonSecure"/>
+      <require condition="Compiler GCC"/>
+    </condition>
+
+    <!-- Device + Compiler Conditions (IAR) -->
+    <condition id="STM32L552 IAR" >
+      <description>STMicroelectronics STM32L552 Devices and IAR Compiler</description>
+      <require condition="STM32L552"/>
+      <require condition="Compiler IAR"/>
+    </condition>
+    <condition id="STM32L562 IAR" >
+      <description>STMicroelectronics STM32L562 Devices and IAR Compiler</description>
+      <require condition="STM32L562"/>
+      <require condition="Compiler IAR"/>
+    </condition>
+
+    <!-- Device + Security + Compiler Conditions (IAR) -->
+    <condition id="STM32L552xC noTZ IAR" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?C*"/>
+      <require condition="noTZ"/>
+      <require condition="Compiler IAR"/>
+    </condition>
+    <condition id="STM32L552xC isSecure IAR" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?C*"/>
+      <require condition="isSecure"/>
+      <require condition="Compiler IAR"/>
+    </condition>
+    <condition id="STM32L552xC isNonSecure IAR" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?C*"/>
+      <require condition="isNonSecure"/>
+      <require condition="Compiler IAR"/>
+    </condition>
+    <condition id="STM32L552xE noTZ IAR" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?E*"/>
+      <require condition="noTZ"/>
+      <require condition="Compiler IAR"/>
+    </condition>
+    <condition id="STM32L552xE isSecure IAR" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?E*"/>
+      <require condition="isSecure"/>
+      <require condition="Compiler IAR"/>
+    </condition>
+    <condition id="STM32L552xE isNonSecure IAR" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L552?E*"/>
+      <require condition="isNonSecure"/>
+      <require condition="Compiler IAR"/>
+    </condition>
+    <condition id="STM32L562xE noTZ IAR" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L562?E*"/>
+      <require condition="noTZ"/>
+      <require condition="Compiler IAR"/>
+    </condition>
+    <condition id="STM32L562xE isSecure IAR" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L562?E*"/>
+      <require condition="isSecure"/>
+      <require condition="Compiler IAR"/>
+    </condition>
+    <condition id="STM32L562xE isNonSecure IAR" >
+      <require Dvendor="STMicroelectronics:13" Dname="STM32L562?E*"/>
+      <require condition="isNonSecure"/>
+      <require condition="Compiler IAR"/>
+    </condition>
+
+    <!-- HAL Conditions -->
+    <condition id="STM32L5 HAL">
+      <description>STMicroelectronics STM32L5 Device and HAL</description>
+      <require condition="STM32L5"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Common"/>
+    </condition>
+    <condition id="STM32L5 HAL Common">
+      <description>STMicroelectronics STM32L5 Device and HAL Common</description>
+      <require condition="STM32L5"/>
+      <require Cclass="CMSIS"  Cgroup="CORE"/>
+      <!--require Cclass="Device" Cgroup="STM32Cube Framework"/-->
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Common"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Cortex"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="RCC"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="PWR"/>
+    </condition>
+    <condition id="STM32L5 HAL GPIO Flash">
+      <description>STMicroelectronics STM32L5 Device and HAL with GPIO</description>
+      <require condition="STM32L5"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Common"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="GPIO"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Flash"/>
+    </condition>
+    <condition id="STM32L5 HAL DMA">
+      <description>STMicroelectronics STM32L5 Device and HAL with DMA</description>
+      <require condition="STM32L5"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Common"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="DMA"/>
+    </condition>
+
+    <!-- LL driver Conditions -->
+    <condition id="STM32L5 LL">
+      <description>STMicroelectronics STM32L5 Device and LL</description>
+      <require condition="STM32L5"/>
+      <require Cclass="Device" Cgroup="STM32Cube LL" Csub="Common"/>
+    </condition>
+    <condition id="STM32L5 LL Common">
+      <description>STMicroelectronics STM32L5 Device and LL</description>
+      <require condition="STM32L5"/>
+      <require Cclass="CMSIS"  Cgroup="CORE"/>
+      <!--require Cclass="Device" Cgroup="STM32Cube Framework"/-->
+      <require Cclass="Device" Cgroup="STM32Cube LL" Csub="UTILS"/>
+      <require Cclass="Device" Cgroup="STM32Cube LL" Csub="RCC"/>
+      <require Cclass="Device" Cgroup="STM32Cube LL" Csub="PWR"/>
+    </condition>
+
+    <!-- STM32L552E-Eval BSP Conditions -->
+    <condition id="STM32L552E-EVAL BSP">
+      <description>STMicroelectronics STM32L552E-EVAL BSP</description>
+      <require condition="STM32L552"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Common"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="GPIO"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="I2C"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="ADC"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="EXTI"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="UART"/>
+    </condition>
+    <condition id="STM32L552E-EVAL BSP Audio">
+      <description>STMicroelectronics STM32L552E-EVAL BSP Audio</description>
+      <require condition="STM32L552"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Common"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="GPIO"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="SAI"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="DMA"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="DFSDM"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="TIM"/>
+      <require Cclass="Board Support" Cgroup="Drivers" Csub="Basic I/O"/>
+    </condition>
+    <condition id="STM32L552E-EVAL BSP BUS">
+      <description>STMicroelectronics STM32L552E-EVAL BSP Bus</description>
+      <require condition="STM32L552"/>
+      <require Cclass="Board Support" Cgroup="Drivers" Csub="Basic I/O"/>
+    </condition>
+    <condition id="STM32L552E-EVAL BSP LCD">
+      <description>STMicroelectronics STM32L552E-EVAL BSP LCD</description>
+      <require condition="STM32L552"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="GPIO"/>
+      <require Cclass="Board Support" Cgroup="Drivers" Csub="Basic I/O"/>
+    </condition>
+    <condition id="STM32L552E-EVAL BSP TS">
+      <description>STMicroelectronics STM32L552E-EVAL BSP TS</description>
+      <require condition="STM32L552"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Common"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="GPIO"/>
+      <require Cclass="Board Support" Cgroup="Drivers" Csub="Basic I/O"/>
+    </condition>
+    <condition id="STM32L552E-EVAL BSP IDD">
+      <description>STMicroelectronics STM32L552E-EVAL BSP IDD</description>
+      <require condition="STM32L552"/>
+      <require Cclass="Board Support" Cgroup="Drivers" Csub="Basic I/O"/>
+    </condition>
+    <condition id="STM32L552E-EVAL BSP IO">
+      <description>STMicroelectronics STM32L552E-EVAL BSP IO</description>
+      <require condition="STM32L552"/>
+      <require Cclass="Board Support" Cgroup="Drivers" Csub="Basic I/O"/>
+      <require Cclass="Board Support" Cgroup="Drivers" Csub="BUS"/>
+      <require Cclass="Board Support" Cgroup="Drivers" Csub="IDD"/>
+    </condition>
+    <condition id="STM32L552E-EVAL BSP OSPI">
+      <description>STMicroelectronics STM32L552E-EVAL BSP OSPI</description>
+      <require condition="STM32L552"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Common"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="GPIO"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="OSPI"/>
+    </condition>
+    <condition id="STM32L552E-EVAL BSP SD">
+      <description>STMicroelectronics STM32L552E-EVAL BSP SD</description>
+      <require condition="STM32L552"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Common"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="GPIO"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="SD"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="DMA"/>
+      <require Cclass="Board Support" Cgroup="Drivers" Csub="I/O"/>
+    </condition>
+    <condition id="STM32L552E-EVAL BSP SRAM">
+      <description>STMicroelectronics STM32L552E-EVAL BSP SRAM</description>
+      <require condition="STM32L552"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Common"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="GPIO"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="SRAM"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="DMA"/>
+    </condition>
+    <condition id="STM32L552E-EVAL LED">
+      <description>STMicroelectronics STM32L552E-Eval LED</description>
+      <require condition="STM32L552"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Common"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="GPIO"/>
+      <require Cclass="Board Support" Cgroup="Drivers" Csub="Basic I/O"/>
+      <require Cclass="Board Support" Cgroup="Drivers" Csub="I/O"/>
+    </condition>
+    <condition id="STM32L552E-EVAL Buttons">
+      <description>STMicroelectronics STM32L552E-Eval Buttons</description>
+      <require condition="STM32L552"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Common"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="GPIO"/>
+      <require Cclass="Board Support" Cgroup="Drivers" Csub="Basic I/O"/>
+    </condition>
+    <condition id="STM32L552E-EVAL Joystick">
+      <description>STMicroelectronics STM32L552E-Eval Joystick</description>
+      <require condition="STM32L552"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Common"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="GPIO"/>
+      <require Cclass="Board Support" Cgroup="Drivers" Csub="Basic I/O"/>
+    </condition>
+    <condition id="STM32L552E-EVAL ADC">
+      <description>STMicroelectronics STM32L552E-Eval ADC</description>
+      <require condition="STM32L552"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="Common"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="GPIO"/>
+      <require Cclass="Device" Cgroup="STM32Cube HAL" Csub="ADC"/>
+    </condition>
+  </conditions>
+
+  <components>
+    <component Cclass="Device" Cgroup="Startup" Cversion="1.0.0" condition="STM32L5 CMSIS">
+      <description>System Startup for STMicroelectronics STM32L5 Series</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STARTUP_STM32L5XX    /* Device Startup for STM32L5 */
+      </RTE_Components_h>
+
+      <files>
+        <!--  include folder -->
+        <file category="include" name="Drivers/CMSIS/Device/ST/STM32L5xx/Include/"/>
+
+        <!-- Flash Option Bytes templates -->
+
+        <!-- common device header file -->
+        <file category="header" name="Drivers/CMSIS/Device/ST/STM32L5xx/Include/stm32l5xx.h"/>
+
+        <!-- startup files -->
+        <!-- ARM Compiler Toolchain -->
+        <file category="source"       condition="STM32L552 ARMCC"               name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/arm/startup_stm32l552xx.s" attr="config" version="1.0.0"/>
+        <file category="source"       condition="STM32L562 ARMCC"               name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/arm/startup_stm32l562xx.s" attr="config" version="1.0.0"/>
+
+        <file category="linkerScript" condition="STM32L552xC noTZ ARMCC"        name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/arm/linker/stm32l552xc_flash.sct"    attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L552xC isSecure ARMCC"    name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/arm/linker/stm32l552xc_flash_s.sct"  attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L552xC isNonSecure ARMCC" name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/arm/linker/stm32l552xc_flash_ns.sct" attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L552xE noTZ ARMCC"        name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/arm/linker/stm32l552xe_flash.sct"    attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L552xE isSecure ARMCC"    name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/arm/linker/stm32l552xe_flash_s.sct"  attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L552xE isNonSecure ARMCC" name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/arm/linker/stm32l552xe_flash_ns.sct" attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L562xE noTZ ARMCC"        name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/arm/linker/stm32l562xe_flash.sct"    attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L562xE isSecure ARMCC"    name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/arm/linker/stm32l562xe_flash_s.sct"  attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L562xE isNonSecure ARMCC" name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/arm/linker/stm32l562xe_flash_ns.sct" attr="config" version="1.0.0"/>
+
+        <!-- GCC Toolchain -->
+        <file category="source"       condition="STM32L552 GCC"                 name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/gcc/startup_stm32l552xx.S"           attr="config" version="1.0.0"/>
+        <file category="source"       condition="STM32L562 GCC"                 name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/gcc/startup_stm32l562xx.S"           attr="config" version="1.0.0"/>
+
+        <file category="linkerScript" condition="STM32L552xC noTZ GCC"          name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/gcc/linker/STM32L552xC_FLASH.ld"     attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L552xC isSecure GCC"      name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/gcc/linker/STM32L552xC_FLASH_s.ld"   attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L552xC isNonSecure GCC"   name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/gcc/linker/STM32L552xC_FLASH_ns.ld"  attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L552xE noTZ GCC"          name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/gcc/linker/STM32L552xE_FLASH.ld"     attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L552xE isSecure GCC"      name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/gcc/linker/STM32L552xE_FLASH_s.ld"   attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L552xE isNonSecure GCC"   name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/gcc/linker/STM32L552xE_FLASH_ns.ld"  attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L562xE noTZ GCC"          name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/gcc/linker/STM32L562xE_FLASH.ld"     attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L562xE isSecure GCC"      name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/gcc/linker/STM32L562xE_FLASH_s.ld"   attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L562xE isNonSecure GCC"   name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/gcc/linker/STM32L562xE_FLASH_ns.ld"  attr="config" version="1.0.0"/>
+
+        <!-- IAR Toolchain -->
+        <file category="source" condition="STM32L552 IAR"                       name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/iar/startup_stm32l552xx.s"           attr="config" version="1.0.0"/>
+        <file category="source" condition="STM32L562 IAR"                       name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/iar/startup_stm32l562xx.s"           attr="config" version="1.0.0"/>
+
+        <file category="linkerScript" condition="STM32L552xC noTZ IAR"          name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/iar/linker/stm32l552xc_flash.icf"    attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L552xC isSecure IAR"      name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/iar/linker/stm32l552xc_flash_s.icf"  attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L552xC isNonSecure IAR"   name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/iar/linker/stm32l552xc_flash_ns.icf" attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L552xE noTZ IAR"          name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/iar/linker/stm32l552xe_flash.icf"    attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L552xE isSecure IAR"      name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/iar/linker/stm32l552xe_flash_s.icf"  attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L552xE isNonSecure IAR"   name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/iar/linker/stm32l552xe_flash_ns.icf" attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L562xE noTZ IAR"          name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/iar/linker/stm32l562xe_flash.icf"    attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L562xE isSecure IAR"      name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/iar/linker/stm32l562xe_flash_s.icf"  attr="config" version="1.0.0"/>
+        <file category="linkerScript" condition="STM32L562xE isNonSecure IAR"   name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/iar/linker/stm32l562xe_flash_ns.icf" attr="config" version="1.0.0"/>
+
+        <!-- system file -->
+        <file category="source"                                                 name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/system_stm32l5xx.c"                  attr="config" version="1.0.0" condition="noTZ"/>
+        <file category="source"                                                 name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/system_stm32l5xx_s.c"                attr="config" version="1.0.0" condition="isSecure"/>
+        <file category="source"                                                 name="Drivers/CMSIS/Device/ST/STM32L5xx/Source/Templates/system_stm32l5xx_ns.c"               attr="config" version="1.0.0" condition="isNonSecure"/>
+                                                                                                                                                                              
+        <!-- SAU configuration -->                                                                                                                                            
+        <file category="header"                                                 name="Drivers/CMSIS/Device/ST/STM32L5xx/Include/partition_stm32l5xx.h"                                      version="1.0.0"/>
+        <file category="header" condition="STM32L552_S"                         name="Drivers/CMSIS/Device/ST/STM32L5xx/Include/Templates/partition_stm32l552xx.h"            attr="config" version="1.0.0"/>
+        <file category="header" condition="STM32L562_S"                         name="Drivers/CMSIS/Device/ST/STM32L5xx/Include/Templates/partition_stm32l562xx.h"            attr="config" version="1.0.0"/>
+      </files>
+    </component>
+
+    <!-- START: STMicroelectronics STM32CubeL5 HAL -->
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="Common"    Cversion="0.7.0" condition="STM32L5 HAL Common">
+      <description>Common HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_COMMON
+      </RTE_Components_h>
+      <files>
+        <file category="doc"     name="Drivers/STM32L5xx_HAL_Driver/STM32L562xx_User_Manual.chm"/>
+        <file category="include" name="Drivers/STM32L5xx_HAL_Driver/Inc/"/>
+        <file category="include" name="Drivers/STM32L5xx_HAL_Driver/Inc/Legacy/"/>
+        <file category="header"  name="Drivers/STM32L5xx_HAL_Driver/Inc/stm32l5xx_hal.h"/>
+        <file category="source"  name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal.c"/>
+        <file category="header"  name="Drivers/Config/stm32l5xx_hal_conf.h"               attr="config" version="1.0.0"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="ADC"       Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>Analog-to-digital converter (ADC) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_ADC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_adc.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_adc_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="COMP"      Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>Analog Comparator (CRC) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_COMP
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_comp.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="Cortex"    Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>Cortex HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_CORTEX
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_cortex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="CRC"       Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>CRC calculation unit (CRC) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_CRC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_crc.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_crc_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="CRYP"      Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>Cryptographic processor (CRYP) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_CRYP
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_cryp.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_cryp_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="DAC"       Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>Digital-to-analog converter (DAC) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_DAC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_dac.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_dac_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="DFSDM"     Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>Digital Filter for Sigma-Delta Modulators (DFSDM) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_DFSDM
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_dfsdm.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_dfsdm_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="DMA"       Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>DMA controller (DMA) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_DMA
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_dma.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_dma_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="EXTI"      Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>EXTI HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_EXTI
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_exti.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="FDCAN"     Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>Controller area network (FDCAN) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_FDCAN
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_fdcan.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="Flash"     Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>Embedded Flash memory HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_FLASH
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_flash.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_flash_ex.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_flash_ramfunc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="GPIO"      Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>General-purpose I/O (GPIO) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_GPIO
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_gpio.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="GTZC"      Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>Global TrustZone controller (GTZC) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_GTZC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_gtzc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="HASH"      Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>Hash processor (HASH) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_HASH
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_hash.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_hash_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="I2C"       Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>Inter-integrated circuit (I2C) interface HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_I2C
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_i2c.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_i2c_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="ICACHE"    Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>Instruction cache (ICACHE) interface HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_ICACHE
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_icache.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="IRDA"      Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>IrDA HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_IRDA
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_irda.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="IWDG"      Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>Independent watchdog (IWDG) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_IWDG
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_iwdg.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="LPTIM"     Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>Low-power timer (LPTIM) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_LPTIM
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_lptim.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="MMC"       Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>MMC card HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_MMC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_mmc.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_mmc_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="NAND"      Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>NAND Flash controller HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_NAND
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_nand.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_fmc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="NOR"       Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>NOR Flash controller HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_NOR
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_nor.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_fmc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="OPAMP"     Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>Operational amplifier peripheral HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_OPAMP
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_opamp.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_opamp_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="OSPI"      Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>Octo Serial peripheral interface (OSPI) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_OSPI
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_ospi.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="OTFDEC"    Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>On-the-fly decryption engine (OTFDEC) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_OTFDEC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_otfdec.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="PCD"       Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>USB Peripheral controller (PCD) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_PCD
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_pcd.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_pcd_ex.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_usb.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="PWR"       Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>Power controller (PWR) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_PWR
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_pwr.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_pwr_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="RCC"       Cversion="0.7.0" condition="STM32L5 HAL GPIO Flash">
+      <description>Reset and clock control (RCC) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_RCC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_rcc.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_rcc_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="RNG"       Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>Random number generator (RNG) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_RNG
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_rng.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="RTC"       Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>Real-time clock (RTC) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_RTC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_rtc.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_rtc_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="SAI"       Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>Serial audio interface (SAI) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_SAI
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_sai.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_sai_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="SD"        Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>Secure digital (SD) interface HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_SD
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_sd.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_sd_ex.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_sdmmc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="Smartcard" Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>Smartcard HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_SMARTCARD
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_smartcard.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_smartcard_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="SMBUS"     Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>System Management Bus (SMBus) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_SMBUS
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_smbus.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="SPI"       Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>Serial peripheral interface (SPI) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_SPI
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_spi.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_spi_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="SRAM"      Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>SRAM controller (SRAM) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_SRAM
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_sram.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_fmc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="TIM"       Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>Timers (TIM) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_TIM
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_tim.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_tim_ex.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_timebase_tim_template.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="TSC"       Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>Touch Sensing Controller (TSC) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_TSC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_tsc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="UART"      Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>Universal asynchronous receiver transmitter (UART) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_UART
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_uart.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_uart_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="USART"     Cversion="0.7.0" condition="STM32L5 HAL DMA">
+      <description>Universal synchronous asynchronous receiver transmitter (USART) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_USART
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_usart.c"/>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_usart_ex.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube HAL" Csub="WWDG"      Cversion="0.7.0" condition="STM32L5 HAL">
+      <description>Window watchdog (WWDG) HAL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_HAL_WWDG
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_hal_wwdg.c"/>
+      </files>
+    </component>
+    <!-- END: STMicroelectronics STM32CubeL5 HAL -->
+
+    <!-- START: STMicroelectronics STM32CubeL5 LL -->
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="Common" Cversion="0.7.0" condition="STM32L5 LL Common">
+      <description>Common LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_COMMON
+      </RTE_Components_h>
+      <files>
+        <file category="include" name="Drivers/STM32L5xx_HAL_Driver/Inc/"/>
+        <file category="include" name="Drivers/STM32L5xx_HAL_Driver/Inc/Legacy/"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="ADC"    Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Analog-to-digital converter (ADC) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_ADC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_adc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="COMP"   Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Analog Comparator (CRC) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_COMP
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_comp.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="CRC"    Cversion="0.7.0" condition="STM32L5 LL">
+      <description>CRC calculation unit (CRC) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_CRC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_crc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="CRS"    Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Clock recovery system (CRS) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_CRS
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_crs.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="DAC"    Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Digital-to-analog converter (DAC) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_DAC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_dac.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="DMA"    Cversion="0.7.0" condition="STM32L5 LL">
+      <description>DMA controller (DMA) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_DMA
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_dma.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="EXTI"   Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Extended interrupts and events controler (EXTI) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_EXTI
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_exti.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="FMC"    Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Flexible memory controller (FMC) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_FMC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_fmc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="GPIO"   Cversion="0.7.0" condition="STM32L5 LL">
+      <description>General-purpose I/O (GPIO) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_GPIO
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_gpio.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="I2C"    Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Inter-integrated circuit (I2C) interface LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_I2C
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_i2c.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="LPTIM"  Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Low-power timer (LPTIM) interface LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_LPTIM
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_lptim.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="LPUART" Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Low-power universal asynchronous receiver transmitter (LPUART) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_LPUART
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_lpuart.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="OPAMP"  Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Operational amplifier (OPAMP) peripheral LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_OPAMP
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_opamp.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="PKA"    Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Public key accelerator (PKA) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_PKA
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_pka.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="PWR"    Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Power controller (PWR) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_PWR
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_pwr.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="RCC"    Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Reset and clock control (RCC) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_RCC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_rcc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="RNG"    Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Random number generator (RNG) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_RNG
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_rng.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="RTC"    Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Real-time clock (RTC) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_RTC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_rtc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="SDMMC"  Cversion="0.7.0" condition="STM32L5 LL">
+      <description>SD/SDIO/MMC card host interface (SDMMC) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_SDMMC
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_sdmmc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="SPI"    Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Serial peripheral interface (SPI) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_SPI
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_spi.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="TIM"    Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Timers (TIM) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_TIM
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_tim.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="UCPD"   Cversion="0.7.0" condition="STM32L5 LL">
+      <description>USB Type-C / USB Power Delivery interface (UCPD) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_UCPD
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_ucpd.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="USART"  Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Universal synchronous asynchronous receiver transmitter (USART) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_USART
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_usart.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="USB"    Cversion="0.7.0" condition="STM32L5 LL">
+      <description>Universal serial bus full-speed device interface (USB) LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_USB
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_usb.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="STM32Cube LL" Csub="UTILS"  Cversion="0.7.0" condition="STM32L5">
+      <description>UTILS LL driver</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_LL_UTILS
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="Drivers/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_utils.c"/>
+      </files>
+    </component>
+    <!-- END: STMicroelectronics STM32CubeL5 LL -->
+
+    <!-- STM32L552E_EVAL Board -->
+    <bundle Cbundle="STM32L552E-EVAL" Cclass="Board Support" Cversion="1.0.0">
+      <description>STMicroelectronics STM32L552E_EVAL Board</description>
+      <doc></doc>
+      <component Cgroup="Drivers" Csub="Basic I/O"          condition="STM32L552E-EVAL BSP">
+        <description>LEDs, push-buttons and COM ports for STM32L552E_EVAL Board</description>
+        <files>
+          <file category="header" name="Drivers/Config/stm32l552e_eval_conf.h"        attr="config" version="1.0.0"/>
+          <file category="header" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval.h"/>
+          <file category="source" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval.c"/>
+        </files>
+      </component>
+      <component Cgroup="Drivers" Csub="Audio"              condition="STM32L552E-EVAL BSP Audio">
+        <description>Audio for STMicroelectronics STM32L552E_EVAL Board</description>
+        <files>
+          <file category="header" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_audio.h"/>
+          <file category="source" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_audio.c"/>
+          <file category="source" name="Drivers/BSP/Components/cs42l51/cs42l51.c"/>
+        </files>
+      </component>
+      <component Cgroup="Drivers" Csub="BUS"                condition="STM32L552E-EVAL BSP BUS">
+        <description>BUS for STMicroelectronics STM32L552E_EVAL Board</description>
+        <files>
+          <file category="header" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_bus.h"/>
+          <file category="source" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_bus.c"/>
+        </files>
+      </component>
+      <component Cgroup="Drivers" Csub="LCD"                condition="STM32L552E-EVAL BSP LCD">
+        <description>LCD for STMicroelectronics STM32L552E-EVAL Board</description>
+        <files>
+          <file category="header" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_lcd.h"/>
+          <file category="source" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_lcd.c"/>
+          <file category="source" name="Drivers/BSP/Components/hx8347i/hx8347i.c"/>
+        </files>
+      </component>
+      <component Cgroup="Drivers" Csub="Touch Screen"       condition="STM32L552E-EVAL BSP TS">
+        <description>Touch Screen for STMicroelectronics STM32L552E-EVAL Board</description>
+        <files>
+          <file category="header" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_ts.h"/>
+          <file category="source" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_ts.c"/>
+          <file category="source" name="Drivers/BSP/Components/stmpe811/stmpe811.c"/>
+        </files>
+      </component>
+      <component Cgroup="Drivers" Csub="IDD"                condition="STM32L552E-EVAL BSP IDD">
+        <description>IDD for STMicroelectronics STM32L552E_EVAL Board</description>
+        <files>
+          <file category="header" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_idd.h"/>
+          <file category="source" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_idd.c"/>
+          <file category="source" name="Drivers/BSP/Components/mfxstm32l152/mfxstm32l152.c"/>
+          <file category="source" name="Drivers/BSP/Components/mfxstm32l152/mfxstm32l152_reg.c"/>
+        </files>
+      </component>
+      <component Cgroup="Drivers" Csub="I/O"                condition="STM32L552E-EVAL BSP IO">
+        <description>I/O for STMicroelectronics STM32L552E_EVAL Board</description>
+        <files>
+          <file category="header" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_io.h"/>
+          <file category="source" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_io.c"/>
+          <file category="source" name="Drivers/BSP/Components/mfxstm32l152/mfxstm32l152.c"/>
+          <file category="source" name="Drivers/BSP/Components/mfxstm32l152/mfxstm32l152_reg.c"/>
+        </files>
+      </component>
+      <component Cgroup="Drivers" Csub="SD"                 condition="STM32L552E-EVAL BSP SD">
+        <description>uSD for STMicroelectronics STM32L552E_EVAL Board</description>
+        <files>
+          <file category="header" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_sd.h"/>
+          <file category="source" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_sd.c"/>
+        </files>
+      </component>
+      <component Cgroup="Drivers" Csub="SRAM"               condition="STM32L552E-EVAL BSP SRAM">
+        <description>SRAM for STMicroelectronics STM32L552E_EVAL Board</description>
+        <files>
+          <file category="header" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_sram.h"/>
+          <file category="source" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_sram.c"/>
+        </files>
+      </component>
+      <component Cgroup="Drivers" Csub="OSPI"               condition="STM32L552E-EVAL BSP OSPI">
+        <description>OSPI Flash for STMicroelectronics STM32L552E-EVAL Board</description>
+        <files>
+          <file category="header" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_ospi.h"/>
+          <file category="source" name="Drivers/BSP/STM32L552E_EVAL/stm32l552e_eval_ospi.c"/>
+        </files>
+      </component>
+      <component Cgroup="LED"           Capiversion="1.0.0" condition="STM32L552E-EVAL LED">
+        <description>LED Interface for STMicroelectronics STM32L552E_EVAL Board</description>
+        <files>
+          <file category="source" name="MDK/Boards/ST/STM32L552E-EVAL/Common/LED_STM32L552E-EVAL.c"/>
+        </files>
+      </component>
+      <component Cgroup="Buttons"       Capiversion="1.0.0" condition="STM32L552E-EVAL Buttons">
+        <description>Buttons Interface for STMicroelectronics STM32L552E_EVAL Board</description>
+        <files>
+          <file category="source" name="MDK/Boards/ST/STM32L552E-EVAL/Common/Buttons_STM32L552E-EVAL.c"/>
+        </files>
+      </component>
+      <component Cgroup="Joystick"      Capiversion="1.0.0" condition="STM32L552E-EVAL Joystick">
+        <description>Joystick Interface for STMicroelectronics STM32L552E_EVAL Board</description>
+        <files>
+          <file category="source" name="MDK/Boards/ST/STM32L552E-EVAL/Common/Joystick_STM32L552E-EVAL.c"/>
+        </files>
+      </component>
+      <!--component Cgroup="A/D Converter" Capiversion="1.0.0" condition="STM32L552E-EVAL ADC">
+        <description>A/D Converter Interface for STMicroelectronics STM32L552E_EVAL Board</description>
+        <files>
+          <file category="source" name="MDK/Boards/ST/STM32L552E-EVAL/Common/ADC_STM32L552E-EVAL.c"/>
+        </files>
+      </component-->
+    </bundle>
+
+  </components>
+
+  <boards>
+    <!-- STM32L552E-EVAL Board Support -->
+    <board vendor="STMicroelectronics" name="STM32L552E-EVAL" revision="ES" salesContact="http://www.st.com/stonline/contactus/contacts/index.php">
+      <description>STMicroelectronics STM32L552E-EVAL</description>
+      <image small="MDK/Boards/ST/STM32L552E-EVAL/Documentation/stm32l552e-eval_small.jpg"
+             large="MDK/Boards/ST/STM32L552E-EVAL/Documentation/stm32l552e-eval_large.jpg"/>
+      <!--book category="overview"  name="http://www.st.com/web/en/catalog/tools/PF261634" title="Web Page"/-->
+      <!--book category="schematic" name="MDK/Boards/ST/STM32L552E-EVAL/Documentation/xxx.pdf" title="Schematics"/-->
+      <!--book category="manual"    name="MDK/Boards/ST/STM32L552E-EVAL/Documentation/STM32L552E-EVAL_UM.pdf" title="User Manual"/-->
+      <mountedDevice    deviceIndex="0" Dvendor="STMicroelectronics:13" Dname="STM32L552ZETxQ"/>
+      <compatibleDevice deviceIndex="0" Dvendor="STMicroelectronics:13" DsubFamily="STM32L5x2"/>
+      <feature type="XTAL"            n="8000000"/>
+      <feature type="PWR"             n="5"              name="USB Powered"/>
+      <feature type="USB"             n="1"              name="USB 2.0 Full Speed"/>
+      <feature type="CAN"             n="1"/>
+      <feature type="RS232"           n="1"/>
+      <feature type="GLCD"            n="1"  m="240.320" name="2.4 inch Color QVGA TFT LCD with resistive touchscreen"/>
+      <feature type="Joystick"        n="1"              name="5-position Joystick"/>
+      <feature type="Poti"            n="1"              name="Analog Voltage Control for ADC Input (potentiometer)"/>
+      <feature type="Button"          n="4"              name="Push-Buttons for Reset, Tamper and User"/>
+      <feature type="LED"             n="4"              name="LEDs directly connected to port pins"/>
+      <debugInterface adapter="JTAG/SW" connector="20 pin JTAG (0.1 inch connector)"/>
+      <debugInterface adapter="JTAG/SW" connector="20-pin Cortex debug + ETM Trace (0.05 inch connector)"/>
+    </board>
+  </boards>
+
+  <examples>
+    <example name="Secure/Non-Secure Blinky" doc="Abstract.txt" folder="MDK/Boards/ST/STM32L552E-EVAL/S_NS_Blinky">
+      <description>Bare-metal secure/non-secure Blinky example without RTOS</description>
+      <board name="STM32L552E-EVAL" vendor="STMicroelectronics"/>
+      <project>
+        <environment name="uv" load="Blinky.uvmpw"/>
+      </project>
+      <attributes>
+        <component Cclass="CMSIS" Cgroup="CORE"/>
+        <component Cclass="Device" Cgroup="Startup"/>
+        <category>Getting Started</category>
+      </attributes>
+    </example>
+  </examples>
+
+</package>
